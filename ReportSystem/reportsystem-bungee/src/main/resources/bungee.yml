@@ -1,0 +1,4 @@
+name: ReportSystem
+main: net.minemora.reportsystem.bungee.ReportSystem
+version: ${project.version}
+author: Elecast

@@ -1,0 +1,5 @@
+name: ReportSystem
+main: net.minemora.reportsystem.spigot.ReportSystem
+version: 1.0.0-SNAPSHOT
+author: Elecast
+commands:
