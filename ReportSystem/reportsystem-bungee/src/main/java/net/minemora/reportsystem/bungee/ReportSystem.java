@@ -6,7 +6,7 @@ public class ReportSystem extends Plugin {
 	
 	@Override
     public void onEnable() {
-		getLogger().info("bungee version loaded!");
+		getLogger().info("bungee version loaded! test commit 2");
 	}
 
 }

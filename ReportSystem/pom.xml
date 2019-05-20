@@ -10,14 +10,8 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <modules>
+    <module>reportsystem-common</module>
   	<module>reportsystem-spigot</module>
   	<module>reportsystem-bungee</module>
-  	<module>reportsystem-common</module>
   </modules>
-  <repositories>
-    <repository>
-        <id>spigot-repo</id>
-        <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-    </repository>
-  </repositories>
 </project>
