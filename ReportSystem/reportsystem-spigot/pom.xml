@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.minemora</groupId>
-  <artifactId>reportsystem-spigot</artifactId>
+  <artifactId>ReportSystem-spigot</artifactId>
   <packaging>jar</packaging>
-  <name>ReportSystem-Spigot</name>
+  <name>ReportSystem Spigot</name>
   <version>1.0.0-SNAPSHOT</version>
   <build>
     <resources>
@@ -28,7 +28,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>1.4</version>
+        <version>3.2.0</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -59,12 +59,18 @@
   </properties>
   <dependencies>
     <dependency>
+      <groupId>net.minemora</groupId>
+      <artifactId>reportsystem-common</artifactId>
+      <version>common</version>
+      <type>jar</type>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
       <version>1.8.8-R0.1-SNAPSHOT</version>
       <type>jar</type>
       <scope>provided</scope>
-      <optional>true</optional>
     </dependency>
   </dependencies>
 </project>

@@ -1,6 +1,5 @@
 package net.minemora.reportsystem;
 
-import com.google.gson.Gson;
 import com.imaginarycode.minecraft.redisbungee.RedisBungee;
 
 public class Report {
@@ -9,12 +8,6 @@ public class Report {
 	private String reported;
 	private String reason;
 	
-	private static final Gson gson;
-	
-	static {
-	    gson = new Gson();
-	}
-	
 	public Report(String player, String reported, String reason) {
 		this.player = player;
 		this.reported = reported;
@@ -22,7 +15,7 @@ public class Report {
 	}
 	
 	public void send() {
-		RedisBungee.getApi().sendChannelMessage("ReportSystem", gson.toJson(this));
+		RedisBungee.getApi().sendChannelMessage("ReportSystem", ReportSystem.getGson().toJson(this));
 	}
 
 	public String getPlayer() {
@@ -48,9 +41,4 @@ public class Report {
 	public void setReason(String reason) {
 		this.reason = reason;
 	}
-	
-	public static Gson getGson() {
-		return gson;
-	}
-
 }

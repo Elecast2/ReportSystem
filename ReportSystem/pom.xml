@@ -1,16 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>net.minemora</groupId>
-  <artifactId>ReportSystem</artifactId>
+  <artifactId>reportsystem-parent</artifactId>
   <version>parent</version>
   <packaging>pom</packaging>
-  <name>ReportSystem</name>
-  <description>A System to improve the efficiency of the staff</description>
+  <name>ReportSystem Parent</name>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
   <modules>
-    <module>reportsystem-bungee</module>
-  	<module>reportsystem-spigot</module>
+    <module>reportsystem-common</module>
+    <module>ReportSystem-bungee</module>
+  	<module>ReportSystem-spigot</module>
   </modules>
 </project>

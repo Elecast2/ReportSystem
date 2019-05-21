@@ -1,1 +1,7 @@
-net\minemora\reportsystem\bungee\ReportSystem.class
+net\minemora\reportsystem\command\CommandReport.class
+net\minemora\reportsystem\command\CommandManager.class
+net\minemora\reportsystem\Report.class
+net\minemora\reportsystem\network\PluginMessageHandler.class
+net\minemora\reportsystem\network\PubSubMessageHandler.class
+net\minemora\reportsystem\ReportSystem.class
+net\minemora\reportsystem\command\CommandGoTo.class
