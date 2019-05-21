@@ -1,5 +1,4 @@
 name: ReportSystem
-main: net.minemora.reportsystem.spigot.ReportSystem
+main: net.minemora.reportsystem.ReportSystem
 version: ${project.version}
 author: Elecast
-commands:

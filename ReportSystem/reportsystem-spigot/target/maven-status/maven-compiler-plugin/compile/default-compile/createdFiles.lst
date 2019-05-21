@@ -1,1 +1,3 @@
-net\minemora\reportsystem\spigot\ReportSystem.class
+net\minemora\reportsystem\bungee\BungeeListener.class
+net\minemora\reportsystem\ReportSystem.class
+net\minemora\reportsystem\bungee\BungeeHandler.class

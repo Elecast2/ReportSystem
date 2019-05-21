@@ -1,4 +1,5 @@
 name: ReportSystem
-main: net.minemora.reportsystem.bungee.ReportSystem
+main: net.minemora.reportsystem.ReportSystem
 version: ${project.version}
+depend: [RedisBungee]
 author: Elecast
