@@ -1,3 +1,5 @@
 net\minemora\reportsystem\bungee\BungeeListener.class
 net\minemora\reportsystem\ReportSystem.class
+net\minemora\reportsystem\ReportSystemListener.class
 net\minemora\reportsystem\bungee\BungeeHandler.class
+net\minemora\reportsystem\ReportSystemAPI.class

@@ -5,6 +5,9 @@ import java.util.UUID;
 import com.imaginarycode.minecraft.redisbungee.RedisBungee;
 import com.imaginarycode.minecraft.redisbungee.events.PubSubMessageEvent;
 
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.BaseComponent;
+import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -12,6 +15,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.minemora.reportsystem.Report;
 import net.minemora.reportsystem.ReportSystem;
+import net.minemora.reportsystem.util.Chat;
 
 public class PubSubMessageHandler implements Listener {
 	
@@ -31,10 +35,38 @@ public class PubSubMessageHandler implements Listener {
 			System.out.println("El reportado no se encuentra conectado 002");
 			return;
 		}
+		BaseComponent[] header = TextComponent.fromLegacyText(Chat.format("&6&l&m---------------&f&l[&c&lREPORTE&f&l]&6&l&m---------------"));
+		BaseComponent[] nick = TextComponent.fromLegacyText(Chat.format(" &e&lNick: &a" + report.getPlayer()));
+		BaseComponent[] reported = TextComponent.fromLegacyText(Chat.format(" &6&lReportado: &c" + report.getReported()));
+		BaseComponent[] server = TextComponent.fromLegacyText(Chat.format(" &e&lServidor: &a" + serverInfo.getName()));
+		BaseComponent[] reason = TextComponent.fromLegacyText(Chat.format(" &6&lRazón: &c" + report.getReason()));
+		BaseComponent[] footer = TextComponent.fromLegacyText(Chat.format("&6&l&m---------------------------------------"));
+		
+		TextComponent click = new TextComponent(" Click para ir -> ");
+		click.setColor(ChatColor.GRAY);
+		TextComponent visible = new TextComponent("VISIBLE");
+		visible.setColor(ChatColor.GREEN);
+		visible.setBold(true);
+		visible.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/goto " + report.getReported()));
+		TextComponent hidden = new TextComponent("OCULTO");
+		hidden.setColor(ChatColor.RED);
+		hidden.setBold(true);
+		hidden.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/goto -v " + report.getReported()));
+		click.addExtra(visible);
+		click.addExtra(new TextComponent("  "));
+		click.addExtra(hidden);
+		
+		
 		for(ProxiedPlayer player : ReportSystem.getPlugin().getProxy().getPlayers()) {
 			if(player.hasPermission("staff")) {
-				player.sendMessage(new TextComponent("[Mensaje de prueba] " + report.getReported() + " ha sido reportado por " 
-						+ report.getPlayer() + ", razón: " + report.getReason() + ", servidor: " + serverInfo.getName()));
+				player.sendMessage(header);
+				player.sendMessage(nick);
+				player.sendMessage(reported);
+				player.sendMessage(server);
+				player.sendMessage(reason);
+				player.sendMessage(new TextComponent(""));
+				player.sendMessage(click);
+				player.sendMessage(footer);
 			}
 		}
 	}

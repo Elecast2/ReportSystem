@@ -21,8 +21,13 @@ public final class BungeeHandler {
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "ReportSystem");
 	}
 	
-	public static void sendGoTo(String playerName) {
-		sendMessage("GoTo", playerName);
+	public static void sendGoTo(String playerName, boolean online) {
+		if(online) {
+			sendMessage("GoTo", playerName + ":online");
+		}
+		else {
+			sendMessage("GoTo", playerName);
+		}
 	}
 	
 	public static void sendMessage(String subChannel, String message) {

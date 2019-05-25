@@ -3,6 +3,7 @@ package net.minemora.reportsystem.bungee;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
@@ -30,9 +31,16 @@ public class BungeeListener implements PluginMessageListener {
 			ByteArrayDataInput in = ByteStreams.newDataInput(message);
 			String subchannel = in.readUTF();
 			if(subchannel.equals("GoTo")) {
+				System.out.println("goto recieved");
 				PacketGoTo goTo = (PacketGoTo)ReportSystem.getGson().fromJson(in.readUTF(), PacketGoTo.class);
-				queue.put(goTo.getPlayer(), goTo);
-				BungeeHandler.sendGoTo(goTo.getPlayer());
+				if(Bukkit.getPlayer(goTo.getPlayer()) != null) {
+					BungeeHandler.sendGoTo(goTo.getPlayer(), true);
+					ReportSystem.performTeleport(goTo, player);
+				}
+				else {
+					queue.put(goTo.getPlayer(), goTo);
+					BungeeHandler.sendGoTo(goTo.getPlayer(), false);
+				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

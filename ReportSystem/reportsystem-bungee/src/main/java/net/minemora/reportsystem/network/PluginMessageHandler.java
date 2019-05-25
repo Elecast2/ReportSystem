@@ -37,9 +37,17 @@ public class PluginMessageHandler implements Listener {
         try {
         	String subchannel = in.readUTF();
 			if(subchannel.equals("GoTo")) {
-				String playerName = in.readUTF();
+				String message = in.readUTF();
+				String playerName;
+				if(message.contains(":")) {
+					String[] splited = message.split(":");
+					playerName = splited[0];
+				}
+				else {
+					playerName = message;
+					ReportSystem.getPlugin().getProxy().getPlayer(playerName).connect(server.getInfo());
+				}
 				queue.remove(playerName);
-				ReportSystem.getPlugin().getProxy().getPlayer(playerName).connect(server.getInfo());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -54,6 +62,7 @@ public class PluginMessageHandler implements Listener {
 			System.out.println("El objetivo no se encuentra conectado 001");
 			return;
 		}
+		System.out.println(uid);
 		ServerInfo serverInfo = RedisBungee.getApi().getServerFor(uid);
 		if(serverInfo == null) {
 			System.out.println("El objetivo no se encuentra conectado 002");

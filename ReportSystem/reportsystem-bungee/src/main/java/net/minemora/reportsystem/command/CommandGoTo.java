@@ -8,7 +8,7 @@ import net.minemora.reportsystem.network.PluginMessageHandler;
 public class CommandGoTo extends Command {
 
 	public CommandGoTo() {
-		super("goto");
+		super("goto", "staff", "gt");
 	}
 
 	@Override

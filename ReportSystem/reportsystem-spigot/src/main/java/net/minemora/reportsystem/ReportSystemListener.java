@@ -1,7 +1,5 @@
 package net.minemora.reportsystem;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -15,13 +13,10 @@ public class ReportSystemListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		if(BungeeListener.getInstance().getQueue().containsKey(event.getPlayer().getName())) {
+			event.setJoinMessage("");
 			PacketGoTo pgt = BungeeListener.getInstance().getQueue().get(event.getPlayer().getName());
 			BungeeListener.getInstance().getQueue().remove(event.getPlayer().getName());
-			Player target = Bukkit.getPlayer(pgt.getTarget());
-			if(target == null) {
-				return;
-			}
-			event.getPlayer().teleport(Bukkit.getPlayer(pgt.getTarget()));
+			ReportSystem.performTeleport(pgt, event.getPlayer());
 		}
 	}
 }
