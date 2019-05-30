@@ -7,14 +7,14 @@ public final class ReportSystemAPI {
 	
 	private ReportSystemAPI() {}
 	
-	public static boolean isSpecting(String playerName) {
+	public static boolean isInQueue(String playerName) {
 		if(BungeeListener.getInstance().getQueue().containsKey(playerName)) {
 			return true;
 		}
 		return false;
 	}
 	
-	public static boolean isVisible(String playerName) {
+	public static boolean isQueueVisible(String playerName) {
 		if(BungeeListener.getInstance().getQueue().containsKey(playerName)) {
 			PacketGoTo pgt = BungeeListener.getInstance().getQueue().get(playerName);
 			if(!pgt.isVanish()) {
@@ -22,6 +22,10 @@ public final class ReportSystemAPI {
 			}
 		}
 		return false;
+	}
+	
+	public static void setVisibilityManager(VisibilityManager vmanager) {
+		ReportSystem.getPlugin().setVisibilityManager(vmanager);
 	}
 
 }

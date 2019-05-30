@@ -2,3 +2,7 @@ name: ReportSystem
 main: net.minemora.reportsystem.ReportSystem
 version: 1.0.0-SNAPSHOT
 author: Elecast
+commands:
+   spy:
+      usage: /<command>
+      aliases: [espiar]

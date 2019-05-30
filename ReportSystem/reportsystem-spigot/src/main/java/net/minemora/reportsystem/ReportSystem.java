@@ -1,5 +1,8 @@
 package net.minemora.reportsystem;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -9,11 +12,16 @@ import com.google.gson.Gson;
 
 import net.minemora.reportsystem.bungee.BungeeHandler;
 import net.minemora.reportsystem.bungee.BungeeListener;
+import net.minemora.reportsystem.command.CommandSpy;
 import net.minemora.reportsystem.packet.PacketGoTo;
 
 public class ReportSystem extends JavaPlugin {
 	
 	private static ReportSystem plugin;
+	
+	private static Set<String> spectators = new HashSet<>(); 
+	
+	private VisibilityManager visibilityManager;
 	
 	private static final Gson gson;
 	
@@ -27,6 +35,26 @@ public class ReportSystem extends JavaPlugin {
 		BungeeHandler.setup(this);
 		BungeeListener.setup(this);
 		getServer().getPluginManager().registerEvents(new ReportSystemListener(), this);
+		this.getCommand("spy").setExecutor(new CommandSpy());
+		this.visibilityManager = new VisibilityManager() {
+
+			@Override
+			public void toggleSpy(Player player, boolean enable) {
+				if(enable) {
+					player.setGameMode(GameMode.SPECTATOR);
+					for(Player lp : Bukkit.getOnlinePlayers()) {
+						lp.hidePlayer(player);
+					}
+				}
+				else {
+					player.setGameMode(GameMode.ADVENTURE);
+					for(Player lp : Bukkit.getOnlinePlayers()) {
+						lp.showPlayer(player);
+					}
+				}
+			}
+			
+		};
 	}
 	
 	public static void performTeleport(PacketGoTo pgt, Player player) {
@@ -35,11 +63,8 @@ public class ReportSystem extends JavaPlugin {
 			return;
 		}
 		if(pgt.isVanish()) {
-			player.setGameMode(GameMode.SPECTATOR);
+			getPlugin().getVisibilityManager().toggleSpy(player, true);
 			player.showPlayer(target);
-			for(Player lp : Bukkit.getOnlinePlayers()) {
-				lp.hidePlayer(player);
-			}
 		}
 		player.teleport(Bukkit.getPlayer(pgt.getTarget()));
 	}
@@ -50,5 +75,17 @@ public class ReportSystem extends JavaPlugin {
 
 	public static ReportSystem getPlugin() {
 		return plugin;
+	}
+	
+	public static Set<String> getSpectators() {
+		return spectators;
+	}
+
+	public VisibilityManager getVisibilityManager() {
+		return visibilityManager;
+	}
+
+	public void setVisibilityManager(VisibilityManager visibilityManager) {
+		this.visibilityManager = visibilityManager;
 	}
 }

@@ -1,5 +1,6 @@
 package net.minemora.reportsystem;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -17,6 +18,11 @@ public class ReportSystemListener implements Listener {
 			PacketGoTo pgt = BungeeListener.getInstance().getQueue().get(event.getPlayer().getName());
 			BungeeListener.getInstance().getQueue().remove(event.getPlayer().getName());
 			ReportSystem.performTeleport(pgt, event.getPlayer());
+		}
+		for(String pn : ReportSystem.getSpectators()) {
+			if(Bukkit.getPlayer(pn) != null) {
+				event.getPlayer().hidePlayer(Bukkit.getPlayer(pn));
+			}
 		}
 	}
 }
