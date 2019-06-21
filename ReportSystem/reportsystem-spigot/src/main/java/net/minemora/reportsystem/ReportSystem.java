@@ -34,8 +34,11 @@ public class ReportSystem extends JavaPlugin {
 		plugin = this;
 		BungeeHandler.setup(this);
 		BungeeListener.setup(this);
+		VaultManager.setup(this);
 		getServer().getPluginManager().registerEvents(new ReportSystemListener(), this);
 		this.getCommand("spy").setExecutor(new CommandSpy());
+		
+		//TODO command invsee
 		this.visibilityManager = new VisibilityManager() {
 
 			@Override
