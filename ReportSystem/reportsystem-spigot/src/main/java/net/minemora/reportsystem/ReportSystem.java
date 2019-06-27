@@ -14,6 +14,7 @@ import net.minemora.reportsystem.bungee.BungeeHandler;
 import net.minemora.reportsystem.bungee.BungeeListener;
 import net.minemora.reportsystem.command.CommandSpy;
 import net.minemora.reportsystem.packet.PacketGoTo;
+import net.minemora.reportsystem.util.ChatUtils;
 
 public class ReportSystem extends JavaPlugin {
 	
@@ -67,6 +68,8 @@ public class ReportSystem extends JavaPlugin {
 		}
 		if(pgt.isVanish()) {
 			getPlugin().getVisibilityManager().toggleSpy(player, true);
+			ReportSystem.getSpectators().add(player.getName());
+			player.sendMessage(ChatUtils.format("&aEstas en modo &c&lEspiar")); //TODO LANG
 			player.showPlayer(target);
 		}
 		player.teleport(Bukkit.getPlayer(pgt.getTarget()));

@@ -27,6 +27,9 @@ public class CommandGoTo extends Command {
 			if(args[0].equals("-v")) {
 				PluginMessageHandler.sendGoTo(player.getName(), args[1], true);
 			}
+			else {
+				return; //TODO correct usage
+			}
 		}
 		else {
 			PluginMessageHandler.sendGoTo(player.getName(), args[0], false);

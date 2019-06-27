@@ -1,5 +1,6 @@
 package net.minemora.reportsystem.command;
 
+import java.util.ArrayList;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -15,7 +16,7 @@ import net.minemora.reportsystem.Report;
 public class CommandReport extends Command implements TabExecutor {
 	
 	public CommandReport() {
-		super("report");
+		super("report", "report.temp");
 	}
 
 	@Override
@@ -37,13 +38,13 @@ public class CommandReport extends Command implements TabExecutor {
 	@Override
 	public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
 		if (!(sender instanceof ProxiedPlayer)) {
-			return null;
+			return new ArrayList<String>();
 		}
 		if(args.length == 1) {
 			ProxiedPlayer player = (ProxiedPlayer) sender;
 			Set<UUID> uuids = RedisBungee.getApi().getPlayersOnServer(player.getServer().getInfo().getName());
 			return uuids.stream().map(u -> RedisBungee.getApi().getNameFromUuid(u)).collect(Collectors.toList());
 		}
-		return null;
+		return new ArrayList<String>();
 	}
 }

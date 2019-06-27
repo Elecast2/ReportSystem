@@ -1,9 +1,13 @@
 package net.minemora.reportsystem;
 
+import org.bukkit.entity.Player;
+
 import net.minemora.reportsystem.bungee.BungeeListener;
 import net.minemora.reportsystem.packet.PacketGoTo;
 
 public final class ReportSystemAPI {
+	
+	private static boolean processQueueOnJoin = true;
 	
 	private ReportSystemAPI() {}
 	
@@ -24,8 +28,30 @@ public final class ReportSystemAPI {
 		return false;
 	}
 	
+	public static boolean isSpy(String playerName) {
+		return ReportSystem.getSpectators().contains(playerName);
+	}
+	
 	public static void setVisibilityManager(VisibilityManager vmanager) {
 		ReportSystem.getPlugin().setVisibilityManager(vmanager);
+	}
+	
+	public static boolean processQueue(Player player) {
+		if(BungeeListener.getInstance().getQueue().containsKey(player.getName())) {
+			PacketGoTo pgt = BungeeListener.getInstance().getQueue().get(player.getName());
+			BungeeListener.getInstance().getQueue().remove(player.getName());
+			ReportSystem.performTeleport(pgt, player);
+			return true;
+		}
+		return false;
+	}
+
+	public static boolean isProcessQueueOnJoin() {
+		return processQueueOnJoin;
+	}
+
+	public static void setProcessQueueOnJoin(boolean processQueueOnJoin) {
+		ReportSystemAPI.processQueueOnJoin = processQueueOnJoin;
 	}
 
 }

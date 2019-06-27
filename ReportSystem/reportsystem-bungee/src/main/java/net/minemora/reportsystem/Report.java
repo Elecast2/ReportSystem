@@ -15,7 +15,7 @@ public class Report {
 	}
 	
 	public void send() {
-		RedisBungee.getApi().sendChannelMessage("ReportSystem", ReportSystem.getGson().toJson(this));
+		RedisBungee.getApi().sendChannelMessage("ReportSystem", "Report:" + ReportSystem.getGson().toJson(this));
 	}
 
 	public String getPlayer() {

@@ -42,12 +42,14 @@ public class PluginMessageHandler implements Listener {
 				if(message.contains(":")) {
 					String[] splited = message.split(":");
 					playerName = splited[0];
+					if(splited[1].equals("online")) {
+						return;
+					}
 				}
 				else {
 					playerName = message;
-					ReportSystem.getPlugin().getProxy().getPlayer(playerName).connect(server.getInfo());
 				}
-				queue.remove(playerName);
+				RedisBungee.getApi().sendChannelMessage("ReportSystem", "GoTo:" + playerName + ":" + server.getInfo().getName());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -73,7 +75,7 @@ public class PluginMessageHandler implements Listener {
 	}
 	
 	private static void sendMessage(String subchannel, String message, ServerInfo server) {
-		if(server.getPlayers().size() == 0) {
+		if(RedisBungee.getApi().getPlayersOnServer(server.getName()).size() == 0) {
 			return; //TODO accciones aca
 		}
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -85,5 +87,9 @@ public class PluginMessageHandler implements Listener {
 			e.printStackTrace();
 		}
         server.sendData("ReportSystem", stream.toByteArray());
+	}
+	
+	public static Set<String> getQueue() {
+		return queue;
 	}
 }
