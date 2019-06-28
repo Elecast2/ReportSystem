@@ -24,6 +24,8 @@ public class ReportSystem extends JavaPlugin {
 	
 	private VisibilityManager visibilityManager;
 	
+	private QueueAddEvent queueAddEvent;
+	
 	private static final Gson gson;
 	
 	static {
@@ -59,6 +61,13 @@ public class ReportSystem extends JavaPlugin {
 			}
 			
 		};
+		
+		this.queueAddEvent = new QueueAddEvent() {
+			@Override
+			public void onQueueAdd(String playerName, String targetName) {
+				return;
+			}
+		};
 	}
 	
 	public static void performTeleport(PacketGoTo pgt, Player player) {
@@ -93,5 +102,13 @@ public class ReportSystem extends JavaPlugin {
 
 	public void setVisibilityManager(VisibilityManager visibilityManager) {
 		this.visibilityManager = visibilityManager;
+	}
+
+	public QueueAddEvent getQueueAddEvent() {
+		return queueAddEvent;
+	}
+
+	public void setQueueAddEvent(QueueAddEvent queueAddEvent) {
+		this.queueAddEvent = queueAddEvent;
 	}
 }

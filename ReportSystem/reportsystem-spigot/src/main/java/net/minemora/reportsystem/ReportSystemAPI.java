@@ -36,6 +36,10 @@ public final class ReportSystemAPI {
 		ReportSystem.getPlugin().setVisibilityManager(vmanager);
 	}
 	
+	public static void setQueueAddEvent(QueueAddEvent qaevent) {
+		ReportSystem.getPlugin().setQueueAddEvent(qaevent);
+	}
+	
 	public static boolean processQueue(Player player) {
 		if(BungeeListener.getInstance().getQueue().containsKey(player.getName())) {
 			PacketGoTo pgt = BungeeListener.getInstance().getQueue().get(player.getName());
