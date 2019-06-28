@@ -15,6 +15,7 @@ import net.minemora.reportsystem.bungee.BungeeListener;
 import net.minemora.reportsystem.command.CommandInvSee;
 import net.minemora.reportsystem.command.CommandPing;
 import net.minemora.reportsystem.command.CommandSpy;
+import net.minemora.reportsystem.command.PlayerTabCompleter;
 import net.minemora.reportsystem.packet.PacketGoTo;
 import net.minemora.reportsystem.util.ChatUtils;
 
@@ -44,6 +45,8 @@ public class ReportSystem extends JavaPlugin {
 		this.getCommand("spy").setExecutor(new CommandSpy());
 		this.getCommand("invsee").setExecutor(new CommandInvSee());
 		this.getCommand("ping").setExecutor(new CommandPing());
+		this.getCommand("invsee").setTabCompleter(new PlayerTabCompleter());
+		this.getCommand("ping").setTabCompleter(new PlayerTabCompleter());
 		
 		this.visibilityManager = new VisibilityManager() {
 
