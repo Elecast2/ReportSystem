@@ -35,7 +35,7 @@ public class BungeeListener implements PluginMessageListener {
 				PacketGoTo goTo = (PacketGoTo)ReportSystem.getGson().fromJson(in.readUTF(), PacketGoTo.class);
 				if(Bukkit.getPlayer(goTo.getPlayer()) != null) {
 					BungeeHandler.sendGoTo(goTo.getPlayer(), true);
-					ReportSystem.performTeleport(goTo, player);
+					ReportSystem.performTeleport(goTo, Bukkit.getPlayer(goTo.getPlayer()));
 				}
 				else {
 					queue.put(goTo.getPlayer(), goTo);

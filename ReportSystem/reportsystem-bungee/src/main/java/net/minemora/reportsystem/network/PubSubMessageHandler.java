@@ -30,7 +30,7 @@ public class PubSubMessageHandler implements Listener {
 		String[] splited = event.getMessage().split(":");
 		
 		if(splited[0].equals("Report")) {
-			Report report = (Report)ReportSystem.getGson().fromJson(splited[1], Report.class);
+			Report report = (Report)ReportSystem.getGson().fromJson(event.getMessage().split(":",2)[1], Report.class);
 			UUID uid = RedisBungee.getApi().getUuidFromName(report.getReported());
 			if(uid == null) {
 				System.out.println("El reportado no se encuentra conectado 001");
@@ -45,7 +45,7 @@ public class PubSubMessageHandler implements Listener {
 			BaseComponent[] nick = TextComponent.fromLegacyText(Chat.format(" &e&lNick: &a" + report.getPlayer()));
 			BaseComponent[] reported = TextComponent.fromLegacyText(Chat.format(" &6&lReportado: &c" + report.getReported()));
 			BaseComponent[] server = TextComponent.fromLegacyText(Chat.format(" &e&lServidor: &a" + serverInfo.getName()));
-			BaseComponent[] reason = TextComponent.fromLegacyText(Chat.format(" &6&lRazón: &c" + report.getReason()));
+			BaseComponent[] reason = TextComponent.fromLegacyText(Chat.format(" &6&lRazón: &c") + report.getReason());
 			BaseComponent[] footer = TextComponent.fromLegacyText(Chat.format("&6&l&m---------------------------------------"));
 			
 			TextComponent click = new TextComponent(" Click para ir -> ");

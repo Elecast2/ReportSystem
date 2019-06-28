@@ -6,3 +6,7 @@ commands:
    spy:
       usage: /<command>
       aliases: [espiar]
+   ping:
+      usage: /<command>
+   invsee:
+      usage: /<command>

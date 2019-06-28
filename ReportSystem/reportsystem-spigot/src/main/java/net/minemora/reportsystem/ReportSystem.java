@@ -12,6 +12,8 @@ import com.google.gson.Gson;
 
 import net.minemora.reportsystem.bungee.BungeeHandler;
 import net.minemora.reportsystem.bungee.BungeeListener;
+import net.minemora.reportsystem.command.CommandInvSee;
+import net.minemora.reportsystem.command.CommandPing;
 import net.minemora.reportsystem.command.CommandSpy;
 import net.minemora.reportsystem.packet.PacketGoTo;
 import net.minemora.reportsystem.util.ChatUtils;
@@ -40,8 +42,9 @@ public class ReportSystem extends JavaPlugin {
 		VaultManager.setup(this);
 		getServer().getPluginManager().registerEvents(new ReportSystemListener(), this);
 		this.getCommand("spy").setExecutor(new CommandSpy());
+		this.getCommand("invsee").setExecutor(new CommandInvSee());
+		this.getCommand("ping").setExecutor(new CommandPing());
 		
-		//TODO command invsee
 		this.visibilityManager = new VisibilityManager() {
 
 			@Override
@@ -76,10 +79,12 @@ public class ReportSystem extends JavaPlugin {
 			return;
 		}
 		if(pgt.isVanish()) {
-			getPlugin().getVisibilityManager().toggleSpy(player, true);
-			ReportSystem.getSpectators().add(player.getName());
-			player.sendMessage(ChatUtils.format("&aEstas en modo &c&lEspiar")); //TODO LANG
-			player.showPlayer(target);
+			if(!ReportSystemAPI.isSpy(player.getName())) {
+				getPlugin().getVisibilityManager().toggleSpy(player, true);
+				ReportSystem.getSpectators().add(player.getName());
+				player.sendMessage(ChatUtils.format("&aEstas en modo &c&lEspiar")); //TODO LANG
+				player.showPlayer(target);
+			}
 		}
 		player.teleport(Bukkit.getPlayer(pgt.getTarget()));
 	}
