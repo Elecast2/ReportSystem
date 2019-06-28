@@ -20,8 +20,8 @@ public final class VaultManager {
 		enabled = true;
 		if (plugin.getServer().getPluginManager().getPlugin("Vault") == null) {
 			if(enabled) {
-				plugin.getLogger().severe("Vault not found! disabling plugin...");
-				plugin.getServer().getPluginManager().disablePlugin(plugin);
+				plugin.getLogger().severe("Vault not found!");
+				enabled = false;
 			}
             return;
         }
