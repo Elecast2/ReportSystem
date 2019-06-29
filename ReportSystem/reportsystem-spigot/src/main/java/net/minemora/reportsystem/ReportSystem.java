@@ -12,6 +12,7 @@ import com.google.gson.Gson;
 
 import net.minemora.reportsystem.bungee.BungeeHandler;
 import net.minemora.reportsystem.bungee.BungeeListener;
+import net.minemora.reportsystem.command.CommandClearChat;
 import net.minemora.reportsystem.command.CommandInvSee;
 import net.minemora.reportsystem.command.CommandPing;
 import net.minemora.reportsystem.command.CommandSpy;
@@ -47,6 +48,7 @@ public class ReportSystem extends JavaPlugin {
 		this.getCommand("ping").setExecutor(new CommandPing());
 		this.getCommand("invsee").setTabCompleter(new PlayerTabCompleter());
 		this.getCommand("ping").setTabCompleter(new PlayerTabCompleter());
+		this.getCommand("clearchat").setExecutor(new CommandClearChat());
 		
 		this.visibilityManager = new VisibilityManager() {
 

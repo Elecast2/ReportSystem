@@ -8,9 +8,8 @@ import org.bukkit.entity.Player;
 
 import net.minemora.reportsystem.VaultManager;
 import net.minemora.reportsystem.util.ChatUtils;
-import net.minemora.reportsystem.util.Util;
 
-public class CommandPing implements CommandExecutor {
+public class CommandClearChat implements CommandExecutor {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -19,14 +18,13 @@ public class CommandPing implements CommandExecutor {
 			if(!VaultManager.hasPermission(player, "sup")) {
 				return true;
 			}
-			if(args.length == 0 || args.length > 1) {
+			if(args.length > 0) {
 				return true;
 			}
-			if(Bukkit.getPlayer(args[0]) == null) {
-				return true;
+			for(int i = 0; i<20; i++) {
+				Bukkit.broadcastMessage("");
 			}
-			Player target = Bukkit.getPlayer(args[0]);
-			player.sendMessage(ChatUtils.format("&bPing de &3" + target.getName() + "&b: &f" + Util.getPlayerPing(target) + " ms"));
+			Bukkit.broadcastMessage(ChatUtils.format("&cChat limpiado por: &4" + player.getName()));
 		}
 		return true;
 	}
