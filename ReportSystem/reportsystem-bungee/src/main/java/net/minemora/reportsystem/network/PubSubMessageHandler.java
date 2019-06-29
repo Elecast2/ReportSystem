@@ -15,6 +15,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.minemora.reportsystem.Report;
 import net.minemora.reportsystem.ReportSystem;
+import net.minemora.reportsystem.StaffMessage;
 import net.minemora.reportsystem.util.Chat;
 
 public class PubSubMessageHandler implements Listener {
@@ -73,6 +74,26 @@ public class PubSubMessageHandler implements Listener {
 					player.sendMessage(new TextComponent(""));
 					player.sendMessage(click);
 					player.sendMessage(footer);
+				}
+			}
+		}
+		else if(splited[0].equals("StaffChat")) {
+			StaffMessage smessage = (StaffMessage)ReportSystem.getGson().fromJson(event.getMessage().split(":",2)[1], StaffMessage.class);
+			UUID uid = RedisBungee.getApi().getUuidFromName(smessage.getSender());
+			if(uid == null) {
+				System.out.println("El mensajero no se encuentra conectado 001");
+				return;
+			}
+			ServerInfo serverInfo = RedisBungee.getApi().getServerFor(uid);
+			if(serverInfo == null) {
+				System.out.println("El mensajero no se encuentra conectado 002");
+				return;
+			}
+			BaseComponent[] message = TextComponent.fromLegacyText(Chat
+					.format("&1&lSM &9[&3" + serverInfo.getName() + "&9] &f" + smessage.getSender() + " &1&l> &b" + smessage.getMessage()));
+			for(ProxiedPlayer player : ReportSystem.getPlugin().getProxy().getPlayers()) {
+				if(player.hasPermission("staff.chat")) {
+					player.sendMessage(message);
 				}
 			}
 		}
