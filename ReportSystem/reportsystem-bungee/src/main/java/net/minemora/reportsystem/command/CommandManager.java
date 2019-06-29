@@ -10,5 +10,6 @@ public final class CommandManager {
 		plugin.getProxy().getPluginManager().registerCommand(plugin, new CommandReport());
 		plugin.getProxy().getPluginManager().registerCommand(plugin, new CommandGoTo());
 		plugin.getProxy().getPluginManager().registerCommand(plugin, new CommandChatStaff());
+		plugin.getProxy().getPluginManager().registerCommand(plugin, new CommandStaffList());
 	}
 }

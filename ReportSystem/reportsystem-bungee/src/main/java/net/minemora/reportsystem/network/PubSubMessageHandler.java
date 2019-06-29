@@ -1,5 +1,9 @@
 package net.minemora.reportsystem.network;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import com.imaginarycode.minecraft.redisbungee.RedisBungee;
@@ -16,6 +20,7 @@ import net.md_5.bungee.event.EventHandler;
 import net.minemora.reportsystem.Report;
 import net.minemora.reportsystem.ReportSystem;
 import net.minemora.reportsystem.StaffMessage;
+import net.minemora.reportsystem.command.CommandStaffList;
 import net.minemora.reportsystem.util.Chat;
 
 public class PubSubMessageHandler implements Listener {
@@ -96,6 +101,27 @@ public class PubSubMessageHandler implements Listener {
 					player.sendMessage(message);
 				}
 			}
+		}
+		else if(splited[0].equals("StaffListRequest")) {
+			String origin = splited[1];
+			Map<String, Set<String>> staffList = new HashMap<>();
+			for(ProxiedPlayer player : ReportSystem.getPlugin().getProxy().getPlayers()) {
+				if(player.hasPermission("staff.list")) {
+					String serverName = player.getServer().getInfo().getName();
+					if(!staffList.containsKey(serverName)) {
+						staffList.put(serverName, new HashSet<>());
+					}
+					staffList.get(serverName).add(player.getName());
+				}
+			}
+			new StaffListInfo(RedisBungee.getApi().getServerId(), origin, staffList).send();
+		}
+		else if(splited[0].equals("StaffListInfo")) {
+			StaffListInfo slinfo = (StaffListInfo)ReportSystem.getGson().fromJson(event.getMessage().split(":",2)[1], StaffListInfo.class);
+			if(!RedisBungee.getApi().getServerId().equals(slinfo.getDestiny())) {
+				return;
+			}
+			CommandStaffList.addProxyInfo(slinfo.getOrigin(), slinfo.getStaffList());
 		}
 		else if(splited[0].equals("GoTo")) {
 			String playerName = splited[1];

@@ -26,6 +26,7 @@ public class ReportSystem extends Plugin {
 		RedisBungee.getApi().registerPubSubChannels("ReportSystem");
 		getProxy().getPluginManager().registerListener(this, new PubSubMessageHandler());
 		getProxy().getPluginManager().registerListener(this, new PluginMessageHandler());
+		getProxy().getPluginManager().registerListener(this, new ReportSystemListener());
 	}
 	
 	public static ReportSystem getPlugin() {
