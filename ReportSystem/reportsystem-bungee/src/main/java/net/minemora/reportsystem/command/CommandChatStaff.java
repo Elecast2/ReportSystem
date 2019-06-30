@@ -8,7 +8,7 @@ import net.minemora.reportsystem.StaffMessage;
 public class CommandChatStaff extends Command {
 	
 	public CommandChatStaff() {
-		super("chatstaff", "staff.chat", "s");
+		super("staffchat", "staff.chat", "s");
 	}
 
 	@Override

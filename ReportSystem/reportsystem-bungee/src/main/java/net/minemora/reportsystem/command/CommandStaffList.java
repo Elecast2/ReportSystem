@@ -47,7 +47,14 @@ public class CommandStaffList extends Command {
 			Map<String, Set<String>> result = new HashMap<>();
 			
 			for(Map<String, Set<String>> proxyInfo : currentCache.values()) {
-				result.putAll(proxyInfo);
+				for(String serverName : proxyInfo.keySet()) {
+					if(result.containsKey(serverName)) {
+						result.get(serverName).addAll(proxyInfo.get(serverName));
+					}
+					else {
+						result.put(serverName, proxyInfo.get(serverName));
+					}
+				}
 			}
 			
 			BaseComponent[] header = TextComponent.fromLegacyText(Chat.format("&b&l&m-------------&9&l[&f&lSTAFF ONLINE&9&l]&b&l&m-------------"));

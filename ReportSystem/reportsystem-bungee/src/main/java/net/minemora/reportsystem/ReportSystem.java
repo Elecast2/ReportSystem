@@ -5,6 +5,8 @@ import com.imaginarycode.minecraft.redisbungee.RedisBungee;
 
 import net.md_5.bungee.api.plugin.Plugin;
 import net.minemora.reportsystem.command.CommandManager;
+import net.minemora.reportsystem.config.ConfigMain;
+import net.minemora.reportsystem.database.Database;
 import net.minemora.reportsystem.network.PluginMessageHandler;
 import net.minemora.reportsystem.network.PubSubMessageHandler;
 
@@ -27,6 +29,9 @@ public class ReportSystem extends Plugin {
 		getProxy().getPluginManager().registerListener(this, new PubSubMessageHandler());
 		getProxy().getPluginManager().registerListener(this, new PluginMessageHandler());
 		getProxy().getPluginManager().registerListener(this, new ReportSystemListener());
+		ConfigMain.getInstance().setup();
+		Database.getDatabase().setup();
+		ReportBanManager.setup();
 	}
 	
 	public static ReportSystem getPlugin() {

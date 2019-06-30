@@ -23,7 +23,7 @@ public class Report {
 		UUID reporterUuid = RedisBungee.getApi().getUuidFromName(player);
 		UUID reportedUuid = RedisBungee.getApi().getUuidFromName(reported);
 		if(reporterUuid != null && reportedUuid != null) {
-			Database.getDatabase().addReport(reporterUuid, reportedUuid, reason);
+			Database.getDatabase().addReport(reporterUuid, reportedUuid, player, reported, reason);
 		}
 	}
 

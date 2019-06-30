@@ -18,6 +18,7 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.minemora.reportsystem.Report;
+import net.minemora.reportsystem.ReportBanManager;
 import net.minemora.reportsystem.ReportSystem;
 import net.minemora.reportsystem.StaffMessage;
 import net.minemora.reportsystem.command.CommandStaffList;
@@ -134,6 +135,12 @@ public class PubSubMessageHandler implements Listener {
 				ReportSystem.getPlugin().getProxy().getPlayer(playerName).connect(server);
 			}
 			PluginMessageHandler.getQueue().remove(playerName);
+		}
+		else if(splited[0].equals("Ban")) {
+			ReportBanManager.getBannedUuids().add(UUID.fromString(splited[1]));
+		}
+		else if(splited[0].equals("Unban")) {
+			ReportBanManager.getBannedUuids().remove(UUID.fromString(splited[1]));
 		}
 	}
 }
