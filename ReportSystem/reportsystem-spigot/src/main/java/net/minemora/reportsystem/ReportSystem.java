@@ -79,9 +79,9 @@ public class ReportSystem extends JavaPlugin {
 	}
 	
 	public static void performTeleport(PacketGoTo pgt, Player player) {
-		Player target = Bukkit.getPlayer(pgt.getTarget());
-		if(target == null) {
-			return;
+		Player target = null;
+		if(pgt.getTarget() != null) {
+			target = Bukkit.getPlayer(pgt.getTarget());
 		}
 		if(pgt.isVanish()) {
 			if(!ReportSystemAPI.isSpy(player.getName())) {
@@ -91,7 +91,9 @@ public class ReportSystem extends JavaPlugin {
 				player.showPlayer(target);
 			}
 		}
-		player.teleport(Bukkit.getPlayer(pgt.getTarget()));
+		if(target != null) {
+			player.teleport(target);
+		}
 	}
 	
 	public static Gson getGson() {

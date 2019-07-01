@@ -1,5 +1,7 @@
 package net.minemora.reportsystem;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import com.imaginarycode.minecraft.redisbungee.RedisBungee;
@@ -7,6 +9,8 @@ import com.imaginarycode.minecraft.redisbungee.RedisBungee;
 import net.minemora.reportsystem.database.Database;
 
 public class Report {
+	
+	private static Set<UUID> reportedCache = new HashSet<>();
 	
 	private String player;
 	private String reported;
@@ -49,5 +53,9 @@ public class Report {
 
 	public void setReason(String reason) {
 		this.reason = reason;
+	}
+
+	public static Set<UUID> getReportedCache() {
+		return reportedCache;
 	}
 }

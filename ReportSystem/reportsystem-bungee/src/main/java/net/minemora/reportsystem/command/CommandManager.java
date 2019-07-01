@@ -15,5 +15,8 @@ public final class CommandManager {
 		plugin.getProxy().getPluginManager().registerCommand(plugin, new CommandRUnban());
 		plugin.getProxy().getPluginManager().registerCommand(plugin, new CommandRRHistory());
 		plugin.getProxy().getPluginManager().registerCommand(plugin, new CommandREHistory());
+		plugin.getProxy().getPluginManager().registerCommand(plugin, new CommandReportInfo());
+		plugin.getProxy().getPluginManager().registerCommand(plugin, new CommandGlobalSpy());
+		plugin.getProxy().getPluginManager().registerCommand(plugin, new CommandToggleReports());
 	}
 }

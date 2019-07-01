@@ -21,7 +21,9 @@ import net.minemora.reportsystem.Report;
 import net.minemora.reportsystem.ReportBanManager;
 import net.minemora.reportsystem.ReportSystem;
 import net.minemora.reportsystem.StaffMessage;
+import net.minemora.reportsystem.command.CommandGlobalSpy;
 import net.minemora.reportsystem.command.CommandStaffList;
+import net.minemora.reportsystem.command.CommandToggleReports;
 import net.minemora.reportsystem.util.Chat;
 
 public class PubSubMessageHandler implements Listener {
@@ -48,6 +50,9 @@ public class PubSubMessageHandler implements Listener {
 				System.out.println("El reportado no se encuentra conectado 002");
 				return;
 			}
+			
+			Report.getReportedCache().add(uid);
+			
 			BaseComponent[] header = TextComponent.fromLegacyText(Chat.format("&6&l&m---------------&f&l[&c&lREPORTE&f&l]&6&l&m---------------"));
 			BaseComponent[] nick = TextComponent.fromLegacyText(Chat.format(" &e&lNick: &a" + report.getPlayer()));
 			BaseComponent[] reported = TextComponent.fromLegacyText(Chat.format(" &6&lReportado: &c" + report.getReported()));
@@ -72,6 +77,9 @@ public class PubSubMessageHandler implements Listener {
 			
 			for(ProxiedPlayer player : ReportSystem.getPlugin().getProxy().getPlayers()) {
 				if(player.hasPermission("staff")) {
+					if(CommandToggleReports.getHideReports().contains(player.getUniqueId())) {
+						continue;
+					}
 					player.sendMessage(header);
 					player.sendMessage(nick);
 					player.sendMessage(reported);
@@ -135,6 +143,22 @@ public class PubSubMessageHandler implements Listener {
 				ReportSystem.getPlugin().getProxy().getPlayer(playerName).connect(server);
 			}
 			PluginMessageHandler.getQueue().remove(playerName);
+		}
+		else if(splited[0].equals("GlobalSpy")) {
+			if(splited[1].equals("add")) {
+				CommandGlobalSpy.getGlobalSpy().add(UUID.fromString(splited[2]));
+			}
+			else if(splited[1].equals("remove")) {
+				CommandGlobalSpy.getGlobalSpy().remove(UUID.fromString(splited[2]));
+			}
+		}
+		else if(splited[0].equals("ToggleReports")) {
+			if(splited[1].equals("add")) {
+				CommandToggleReports.getHideReports().add(UUID.fromString(splited[2]));
+			}
+			else if(splited[1].equals("remove")) {
+				CommandToggleReports.getHideReports().remove(UUID.fromString(splited[2]));
+			}
 		}
 		else if(splited[0].equals("Ban")) {
 			ReportBanManager.getBannedUuids().add(UUID.fromString(splited[1]));

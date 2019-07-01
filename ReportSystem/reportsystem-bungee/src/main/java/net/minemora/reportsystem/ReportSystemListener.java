@@ -1,17 +1,33 @@
 package net.minemora.reportsystem;
 
 import net.md_5.bungee.api.event.PlayerDisconnectEvent;
+import net.md_5.bungee.api.event.ServerConnectEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.minemora.reportsystem.command.CommandGlobalSpy;
 import net.minemora.reportsystem.command.CommandReport;
 import net.minemora.reportsystem.command.CommandStaffList;
+import net.minemora.reportsystem.network.PluginMessageHandler;
 
 public class ReportSystemListener implements Listener {
 	
 	@EventHandler
-	public void PlayerDisconnect(PlayerDisconnectEvent event) {
+	public void onPlayerDisconnect(PlayerDisconnectEvent event) {
 		CommandStaffList.queuePlayers.remove(event.getPlayer().getName());
 		CommandReport.cooldown.remove(event.getPlayer().getName());
+	}
+	
+	@EventHandler
+	public void onServerConnect(ServerConnectEvent event) {
+		if(CommandGlobalSpy.getGlobalSpy().contains(event.getPlayer().getUniqueId())) {
+			if(CommandGlobalSpy.getQueue().contains(event.getPlayer().getUniqueId())) {
+				CommandGlobalSpy.getQueue().remove(event.getPlayer().getUniqueId());
+				return;
+			}
+			event.setCancelled(true);
+			CommandGlobalSpy.getQueue().add(event.getPlayer().getUniqueId());
+			PluginMessageHandler.sendGoTo(event.getPlayer().getName(), event.getTarget(), true);
+		}
 	}
 
 }
