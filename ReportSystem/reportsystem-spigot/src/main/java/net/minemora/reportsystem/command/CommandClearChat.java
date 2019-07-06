@@ -15,7 +15,7 @@ public class CommandClearChat implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if(sender instanceof Player) {
 			Player player = (Player) sender;
-			if(!VaultManager.hasPermission(player, "sup")) {
+			if(!VaultManager.hasPermission(player, "mod")) {
 				return true;
 			}
 			if(args.length > 0) {

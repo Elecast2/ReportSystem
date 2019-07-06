@@ -34,9 +34,11 @@ public class CommandGoTo extends Command {
 			if(args[0].equals("-v")) {
 				if(assignedCache.containsKey(args[1])) {
 					String assigned = assignedCache.get(args[1]);
-					player.sendMessage(TextComponent.fromLegacyText(Chat.format("&cEl staff &b" + assigned 
-							+ " &cya se encuentra revisando a &4" + args[1] + " &e si aun asi deseas ir usa &a/goto -i " + args[1])));
-					return;
+					if(!player.getName().equals(assigned)) {
+						player.sendMessage(TextComponent.fromLegacyText(Chat.format("&cEl staff &b" + assigned 
+								+ " &cya se encuentra revisando a &4" + args[1] + " &e si aun asi deseas ir usa &a/goto -i " + args[1])));
+						return;
+					}
 				}
 				PluginMessageHandler.sendGoTo(player.getName(), args[1], true);
 				assignedCache.put(args[1], player.getName());

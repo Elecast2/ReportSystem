@@ -20,6 +20,7 @@ public class CommandStaffList extends Command {
 	public static Map<String, Map<String, Set<String>>> currentCache;
 	public static Set<String> queuePlayers = new HashSet<>();
 	public static boolean requesting = false;
+	private long lastUsage;
 	
 	public CommandStaffList() {
 		super("stafflist", "staff.list", "slist");
@@ -31,10 +32,13 @@ public class CommandStaffList extends Command {
 			return;
 		}
 		if(requesting) {
-			queuePlayers.add(((ProxiedPlayer)sender).getName());
-			return;
+			if((System.currentTimeMillis() - lastUsage) < 5000) {
+				queuePlayers.add(((ProxiedPlayer)sender).getName());
+				return;
+			}
 		}
 		requesting = true;
+		lastUsage = System.currentTimeMillis();
 		queuePlayers.add(((ProxiedPlayer)sender).getName());
 		currentCache = new HashMap<>();
 		RedisBungee.getApi().sendChannelMessage("ReportSystem", "StaffListRequest:" + RedisBungee.getApi().getServerId());

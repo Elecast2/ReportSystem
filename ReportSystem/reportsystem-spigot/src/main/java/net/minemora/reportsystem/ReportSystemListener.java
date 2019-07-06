@@ -26,6 +26,7 @@ public class ReportSystemListener implements Listener {
 		}
 	}
 	
+	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		ReportSystem.getSpectators().remove(event.getPlayer().getName());
 	}
