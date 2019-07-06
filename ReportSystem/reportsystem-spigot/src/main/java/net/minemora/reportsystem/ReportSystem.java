@@ -61,7 +61,7 @@ public class ReportSystem extends JavaPlugin {
 					}
 				}
 				else {
-					player.setGameMode(GameMode.ADVENTURE);
+					player.setGameMode(GameMode.SURVIVAL);
 					for(Player lp : Bukkit.getOnlinePlayers()) {
 						lp.showPlayer(player);
 					}
