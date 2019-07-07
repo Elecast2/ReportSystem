@@ -28,6 +28,16 @@ public final class ReportSystemAPI {
 		return false;
 	}
 	
+	public static boolean hasTarget(String playerName) {
+		if(BungeeListener.getInstance().getQueue().containsKey(playerName)) {
+			PacketGoTo pgt = BungeeListener.getInstance().getQueue().get(playerName);
+			if(pgt.getTarget() != null) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public static boolean isSpy(String playerName) {
 		return ReportSystem.getSpectators().contains(playerName);
 	}

@@ -88,7 +88,9 @@ public class ReportSystem extends JavaPlugin {
 				getPlugin().getVisibilityManager().toggleSpy(player, true);
 				ReportSystem.getSpectators().add(player.getName());
 				player.sendMessage(ChatUtils.format("&aEstas en modo &c&lEspiar")); //TODO LANG
-				player.showPlayer(target);
+				if(target != null) {
+					player.showPlayer(target);
+				}
 			}
 		}
 		if(target != null) {
