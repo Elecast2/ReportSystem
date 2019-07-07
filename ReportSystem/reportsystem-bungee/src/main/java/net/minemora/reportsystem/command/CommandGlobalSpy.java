@@ -1,6 +1,8 @@
 package net.minemora.reportsystem.command;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -16,7 +18,7 @@ public class CommandGlobalSpy extends Command {
 	
 	private static Set<UUID> globalSpy = new HashSet<>();
 	
-	private static Set<UUID> queue = new HashSet<>();
+	private static Map<UUID, String> queue = new HashMap<>();
 
 	public CommandGlobalSpy() {
 		super("globalspy", "sup", "gspy");
@@ -42,7 +44,7 @@ public class CommandGlobalSpy extends Command {
 		return globalSpy;
 	}
 
-	public static Set<UUID> getQueue() {
+	public static Map<UUID, String> getQueue() {
 		return queue;
 	}
 

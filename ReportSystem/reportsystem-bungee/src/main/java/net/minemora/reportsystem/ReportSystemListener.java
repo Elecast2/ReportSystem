@@ -20,12 +20,14 @@ public class ReportSystemListener implements Listener {
 	@EventHandler
 	public void onServerConnect(ServerConnectEvent event) {
 		if(CommandGlobalSpy.getGlobalSpy().contains(event.getPlayer().getUniqueId())) {
-			if(CommandGlobalSpy.getQueue().contains(event.getPlayer().getUniqueId())) {
-				CommandGlobalSpy.getQueue().remove(event.getPlayer().getUniqueId());
-				return;
+			if(CommandGlobalSpy.getQueue().containsKey(event.getPlayer().getUniqueId())) {
+				if(CommandGlobalSpy.getQueue().get(event.getPlayer().getUniqueId()).equals(event.getTarget().getName())) {
+					CommandGlobalSpy.getQueue().remove(event.getPlayer().getUniqueId());
+					return;
+				}
 			}
 			event.setCancelled(true);
-			CommandGlobalSpy.getQueue().add(event.getPlayer().getUniqueId());
+			CommandGlobalSpy.getQueue().put(event.getPlayer().getUniqueId(), event.getTarget().getName());
 			PluginMessageHandler.sendGoTo(event.getPlayer().getName(), event.getTarget(), true);
 		}
 	}

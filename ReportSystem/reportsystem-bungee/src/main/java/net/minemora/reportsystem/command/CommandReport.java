@@ -68,7 +68,8 @@ public class CommandReport extends Command implements TabExecutor {
 				return;
 			}
 			cooldown.put(player.getName(), System.currentTimeMillis());
-			player.sendMessage(TextComponent.fromLegacyText(Chat.format("&a¡Gracias por reportar! &eun staff revisará tu reporte "
+			player.sendMessage(TextComponent.fromLegacyText(Chat.format("&a&l¡Se ha enviado tu reporte con éxito!")));
+			player.sendMessage(TextComponent.fromLegacyText(Chat.format("&eUn miembro del staff revisará tu reporte "
 					+ "tan pronto como sea posible. &cRecuerda que el mal uso de este comando puede provocar que se niegen tus "
 					+ "permisos para usarlo o hasta podrias ser baneado. &6Para mas información usa &e/reportinfo")));
 			new Report(player.getName(), args[0], reason).send();
