@@ -78,6 +78,10 @@ public class PluginMessageHandler implements Listener {
 		PacketGoTo pgt = new PacketGoTo(player, null, vanish);
 		String msg = ReportSystem.getGson().toJson(pgt);
 		queue.add(player);
+		if(RedisBungee.getApi().getPlayersOnServer(serverInfo.getName()).size() == 0) {
+			RedisBungee.getApi().sendChannelMessage("ReportSystem", "GoTo:" + player + ":" + serverInfo.getName());
+			return;
+		}
 		sendMessage("GoTo", msg, serverInfo);
 	}
 	
