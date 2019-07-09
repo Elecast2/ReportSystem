@@ -26,6 +26,9 @@ public class ReportSystemListener implements Listener {
 					return;
 				}
 			}
+			if(event.getPlayer().getServer() == null) {
+				return;
+			}
 			event.setCancelled(true);
 			CommandGlobalSpy.getQueue().put(event.getPlayer().getUniqueId(), event.getTarget().getName());
 			PluginMessageHandler.sendGoTo(event.getPlayer().getName(), event.getTarget(), true);

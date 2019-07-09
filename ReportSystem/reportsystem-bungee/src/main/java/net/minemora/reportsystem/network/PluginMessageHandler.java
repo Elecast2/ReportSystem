@@ -18,6 +18,7 @@ import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 import net.minemora.reportsystem.ReportSystem;
 import net.minemora.reportsystem.packet.PacketGoTo;
+import net.minemora.reportsystem.util.Util;
 
 public class PluginMessageHandler implements Listener {
 	
@@ -82,10 +83,25 @@ public class PluginMessageHandler implements Listener {
 			RedisBungee.getApi().sendChannelMessage("ReportSystem", "GoTo:" + player + ":" + serverInfo.getName());
 			return;
 		}
+		if(serverInfo.getPlayers().size() == 0) {
+			String targetProxy = null;
+			for(String proxyName : RedisBungee.getApi().getAllServers()) {
+				if(!proxyName.equals(RedisBungee.getApi().getServerId())) {
+					if(Util.getPlayersOnServer(serverInfo.getName(), proxyName) > 0) {
+						targetProxy = proxyName;
+						break;
+					}
+				}
+			}
+			if(targetProxy != null) {
+				RedisBungee.getApi().sendChannelMessage("ReportSystem", "SendGoTo:" + targetProxy + ":" + msg + ":" + serverInfo.getName());
+			}
+			return;
+		}
 		sendMessage("GoTo", msg, serverInfo);
 	}
 	
-	private static void sendMessage(String subchannel, String message, ServerInfo server) {
+	public static void sendMessage(String subchannel, String message, ServerInfo server) {
 		if(RedisBungee.getApi().getPlayersOnServer(server.getName()).size() == 0) {
 			return; //TODO accciones aca
 		}

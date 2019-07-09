@@ -144,6 +144,15 @@ public class PubSubMessageHandler implements Listener {
 			}
 			PluginMessageHandler.getQueue().remove(playerName);
 		}
+		else if(splited[0].equals("SendGoTo")) {
+			String targetProxy = splited[1];
+			if(!RedisBungee.getApi().getServerId().equals(targetProxy)) {
+				return;
+			}
+			String msg = splited[2];
+			String serverName = splited[3];
+			PluginMessageHandler.sendMessage("GoTo", msg, ReportSystem.getPlugin().getProxy().getServerInfo(serverName));
+		}
 		else if(splited[0].equals("GlobalSpy")) {
 			if(splited[1].equals("add")) {
 				CommandGlobalSpy.getGlobalSpy().add(UUID.fromString(splited[2]));
