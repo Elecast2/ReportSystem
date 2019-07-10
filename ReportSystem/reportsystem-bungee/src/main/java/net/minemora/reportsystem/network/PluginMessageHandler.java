@@ -94,7 +94,7 @@ public class PluginMessageHandler implements Listener {
 				}
 			}
 			if(targetProxy != null) {
-				RedisBungee.getApi().sendChannelMessage("ReportSystem", "SendGoTo:" + targetProxy + ":" + msg + ":" + serverInfo.getName());
+				RedisBungee.getApi().sendChannelMessage("ReportSystem", "SendGoTo:" + targetProxy + ":" + serverInfo.getName() + ":" + msg);
 			}
 			return;
 		}

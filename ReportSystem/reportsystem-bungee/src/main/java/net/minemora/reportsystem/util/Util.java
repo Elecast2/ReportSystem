@@ -20,8 +20,10 @@ public final class Util {
 	public static int getPlayersOnServer(String serverName, String proxyName) {
 		int count = 0;
 		for(UUID uid : RedisBungee.getApi().getPlayersOnServer(serverName)) {
-			if(RedisBungee.getApi().getProxy(uid).equals(proxyName)) {
-				count++;
+			if(RedisBungee.getApi().getProxy(uid) != null) {
+				if(RedisBungee.getApi().getProxy(uid).equals(proxyName)) {
+					count++;
+				}
 			}
 		}
 		return count;
