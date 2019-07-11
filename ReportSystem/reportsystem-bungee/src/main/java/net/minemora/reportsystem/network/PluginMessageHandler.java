@@ -72,6 +72,25 @@ public class PluginMessageHandler implements Listener {
 			return;
 		}
 		queue.add(player);
+		if(RedisBungee.getApi().getPlayersOnServer(serverInfo.getName()).size() == 0) {
+			RedisBungee.getApi().sendChannelMessage("ReportSystem", "GoTo:" + player + ":" + serverInfo.getName());
+			return;
+		}
+		if(serverInfo.getPlayers().size() == 0) {
+			String targetProxy = null;
+			for(String proxyName : RedisBungee.getApi().getAllServers()) {
+				if(!proxyName.equals(RedisBungee.getApi().getServerId())) {
+					if(Util.getPlayersOnServer(serverInfo.getName(), proxyName) > 0) {
+						targetProxy = proxyName;
+						break;
+					}
+				}
+			}
+			if(targetProxy != null) {
+				RedisBungee.getApi().sendChannelMessage("ReportSystem", "SendGoTo:" + targetProxy + ":" + serverInfo.getName() + ":" + msg);
+			}
+			return;
+		}
 		sendMessage("GoTo", msg, serverInfo);
 	}
 	
