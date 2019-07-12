@@ -1,7 +1,10 @@
 package net.minemora.reportsystem.bungee;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -19,6 +22,8 @@ public class BungeeListener implements PluginMessageListener {
 	private static BungeeListener instance;
 	
 	private Map<String,PacketGoTo> queue = new HashMap<>();
+	
+	private Set<UUID> globalSpy = new HashSet<>();
 	
 	private BungeeListener() {}
 
@@ -43,6 +48,17 @@ public class BungeeListener implements PluginMessageListener {
 					BungeeHandler.sendGoTo(goTo.getPlayer(), false);
 				}
 			}
+			else if(subchannel.equals("GlobalSpy")) {
+				System.out.println("goto recieved");
+				String[] splited = in.readUTF().split(":");
+				UUID uid = UUID.fromString(splited[0]);
+				if(splited[1].equals("add")) {
+					globalSpy.add(uid);
+				}
+				else if(splited[1].equals("remove")) {
+					globalSpy.remove(uid);
+				}
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -61,5 +77,9 @@ public class BungeeListener implements PluginMessageListener {
 
 	public Map<String,PacketGoTo> getQueue() {
 		return queue;
+	}
+	
+	public Set<UUID> getGlobalSpy() {
+		return globalSpy;
 	}
 }

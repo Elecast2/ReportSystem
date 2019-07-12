@@ -57,6 +57,12 @@ public class PluginMessageHandler implements Listener {
 		}
 	}
 	
+	public static void sendGlobalSpy(UUID uid, boolean add) {
+		for(ServerInfo serverInfo : ReportSystem.getPlugin().getProxy().getServers().values()) {
+			sendMessage("GlobalSpy", uid + ":" + (add ? "add" : "remove"), serverInfo);
+		}
+	}
+	
 	public static void sendGoTo(String player, String target, boolean vanish) {
 		PacketGoTo pgt = new PacketGoTo(player, target, vanish);
 		String msg = ReportSystem.getGson().toJson(pgt);

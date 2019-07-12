@@ -1,8 +1,6 @@
 package net.minemora.reportsystem.command;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -12,13 +10,14 @@ import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
+import net.minemora.reportsystem.network.PluginMessageHandler;
 import net.minemora.reportsystem.util.Chat;
 
 public class CommandGlobalSpy extends Command {
 	
 	private static Set<UUID> globalSpy = new HashSet<>();
 	
-	private static Map<UUID, String> queue = new HashMap<>();
+	//private static Map<UUID, String> queue = new HashMap<>();
 
 	public CommandGlobalSpy() {
 		super("globalspy", "sup", "gspy");
@@ -32,10 +31,12 @@ public class CommandGlobalSpy extends Command {
 		ProxiedPlayer player = (ProxiedPlayer) sender;
 		if(getGlobalSpy().contains(player.getUniqueId())) {
 			RedisBungee.getApi().sendChannelMessage("ReportSystem", "GlobalSpy:remove:" + player.getUniqueId());
+			PluginMessageHandler.sendGlobalSpy(player.getUniqueId(), false);
 			player.sendMessage(TextComponent.fromLegacyText(Chat.format("&bHas &cdesactivado &bel modo: &c&lEspiar &9&lGlobal")));
 		}
 		else {
 			RedisBungee.getApi().sendChannelMessage("ReportSystem", "GlobalSpy:add:" + player.getUniqueId());
+			PluginMessageHandler.sendGlobalSpy(player.getUniqueId(), true);
 			player.sendMessage(TextComponent.fromLegacyText(Chat.format("&bHas &aactivado &bel modo: &c&lEspiar &9&lGlobal")));
 		}
 	}
@@ -44,8 +45,10 @@ public class CommandGlobalSpy extends Command {
 		return globalSpy;
 	}
 
+	/*
 	public static Map<UUID, String> getQueue() {
 		return queue;
 	}
+	*/
 
 }

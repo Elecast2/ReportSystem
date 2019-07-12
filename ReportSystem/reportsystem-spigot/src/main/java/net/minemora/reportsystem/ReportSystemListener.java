@@ -8,8 +8,16 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import net.minemora.reportsystem.bungee.BungeeListener;
+import net.minemora.reportsystem.packet.PacketGoTo;
 
 public class ReportSystemListener implements Listener {
+	
+	@EventHandler(priority = EventPriority.LOWEST)
+	public void onPlayerJoinLow(PlayerJoinEvent event) {
+		if(BungeeListener.getInstance().getGlobalSpy().contains(event.getPlayer().getUniqueId())) {
+			BungeeListener.getInstance().getQueue().put(event.getPlayer().getName(), new PacketGoTo(event.getPlayer().getName(), null, true));
+		}
+	}
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerJoin(PlayerJoinEvent event) {
