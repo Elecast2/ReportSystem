@@ -109,7 +109,7 @@ public class Database {
 	}
 	
 	public UUID getUuid(String playerName) {
-		String sql = "SELECT uuid FROM users WHERE username LIKE " + playerName + ";";
+		String sql = "SELECT uuid FROM users WHERE username LIKE '" + playerName + "';";
 		UUID uid = null;
 		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 			try (ResultSet result = stmt.executeQuery()) {
