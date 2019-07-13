@@ -19,16 +19,24 @@ public class CommandSpy implements CommandExecutor {
 				return true;
 			}
 			if(ReportSystem.getSpectators().contains(player.getName())) {
-				ReportSystem.getPlugin().getVisibilityManager().toggleSpy(player, false);
-				ReportSystem.getSpectators().remove(player.getName());
-				player.sendMessage(ChatUtils.format("&6Ya no estas en modo &c&lEspiar")); //TODO LANG
+				set(player, false);
 			}
 			else {
-				ReportSystem.getPlugin().getVisibilityManager().toggleSpy(player, true);
-				ReportSystem.getSpectators().add(player.getName());
-				player.sendMessage(ChatUtils.format("&aEstas en modo &c&lEspiar")); //TODO LANG
+				set(player, true);
 			}
 		}
 		return true;
+	}
+	
+	public static void set(Player player, boolean enable) {
+		ReportSystem.getPlugin().getVisibilityManager().toggleSpy(player, enable);
+		if(enable) {
+			ReportSystem.getSpectators().add(player.getName());
+			player.sendMessage(ChatUtils.format("&aEstas en modo &c&lEspiar")); //TODO LANG
+		}
+		else {
+			ReportSystem.getSpectators().remove(player.getName());
+			player.sendMessage(ChatUtils.format("&6Ya no estas en modo &c&lEspiar")); //TODO LANG
+		}
 	}
 }

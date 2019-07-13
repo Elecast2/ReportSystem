@@ -15,6 +15,8 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 
 import net.minemora.reportsystem.ReportSystem;
+import net.minemora.reportsystem.ReportSystemAPI;
+import net.minemora.reportsystem.command.CommandSpy;
 import net.minemora.reportsystem.packet.PacketGoTo;
 
 public class BungeeListener implements PluginMessageListener {
@@ -54,9 +56,19 @@ public class BungeeListener implements PluginMessageListener {
 				UUID uid = UUID.fromString(splited[0]);
 				if(splited[1].equals("add")) {
 					globalSpy.add(uid);
+					if(Bukkit.getPlayer(uid) != null) {
+						if(!ReportSystemAPI.isSpy(Bukkit.getPlayer(uid).getName())) {
+							CommandSpy.set(Bukkit.getPlayer(uid), true);
+						}
+					}
 				}
 				else if(splited[1].equals("remove")) {
 					globalSpy.remove(uid);
+					if(Bukkit.getPlayer(uid) != null) {
+						if(ReportSystemAPI.isSpy(Bukkit.getPlayer(uid).getName())) {
+							CommandSpy.set(Bukkit.getPlayer(uid), false);
+						}
+					}
 				}
 			}
 		} catch (Exception e) {
