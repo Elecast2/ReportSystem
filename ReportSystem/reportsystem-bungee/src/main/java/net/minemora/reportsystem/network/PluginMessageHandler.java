@@ -68,13 +68,13 @@ public class PluginMessageHandler implements Listener {
 		String msg = ReportSystem.getGson().toJson(pgt);
 		UUID uid = RedisBungee.getApi().getUuidFromName(target);
 		if(uid == null) {
-			System.out.println("El objetivo no se encuentra conectado 001");
+			System.out.println("El objetivo no se encuentra conectado 001" + target);
 			return;
 		}
 		System.out.println(uid);
 		ServerInfo serverInfo = RedisBungee.getApi().getServerFor(uid);
 		if(serverInfo == null) {
-			System.out.println("El objetivo no se encuentra conectado 002");
+			System.out.println("El objetivo no se encuentra conectado 002 " + target);
 			return;
 		}
 		queue.add(player);
@@ -94,6 +94,9 @@ public class PluginMessageHandler implements Listener {
 			}
 			if(targetProxy != null) {
 				RedisBungee.getApi().sendChannelMessage("ReportSystem", "SendGoTo:" + targetProxy + ":" + serverInfo.getName() + ":" + msg);
+			}
+			else {
+				System.out.println("targetProxy null on SendGoTo target");
 			}
 			return;
 		}
@@ -120,6 +123,9 @@ public class PluginMessageHandler implements Listener {
 			}
 			if(targetProxy != null) {
 				RedisBungee.getApi().sendChannelMessage("ReportSystem", "SendGoTo:" + targetProxy + ":" + serverInfo.getName() + ":" + msg);
+			}
+			else {
+				System.out.println("targetProxy null on SendGoTo server");
 			}
 			return;
 		}

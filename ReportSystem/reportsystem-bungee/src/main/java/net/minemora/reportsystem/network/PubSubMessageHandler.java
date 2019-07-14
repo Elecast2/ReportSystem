@@ -135,12 +135,16 @@ public class PubSubMessageHandler implements Listener {
 		else if(splited[0].equals("GoTo")) {
 			String playerName = splited[1];
 			if(!PluginMessageHandler.getQueue().contains(playerName)) {
+				System.out.println("GoTo recieved but " + playerName + " is not in queue");
 				return;
 			}
 			String serverName = splited[2];
 			if(ReportSystem.getPlugin().getProxy().getPlayer(playerName) != null) {
 				ServerInfo server = ReportSystem.getPlugin().getProxy().getServerInfo(serverName);
 				ReportSystem.getPlugin().getProxy().getPlayer(playerName).connect(server);
+			}
+			else {
+				System.out.println("GoTo recieved but " + playerName + " is null");
 			}
 			PluginMessageHandler.getQueue().remove(playerName);
 		}
