@@ -30,6 +30,7 @@ public class PluginMessageHandler implements Listener {
             return;
         }
         if (!(event.getSender() instanceof Server)) {
+        	System.out.println("Message recieved from spigot but sender not instance of Server!");
             return;
         }
         Server server = (Server) event.getSender();

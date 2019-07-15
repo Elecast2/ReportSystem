@@ -38,8 +38,8 @@ public class BungeeListener implements PluginMessageListener {
 			ByteArrayDataInput in = ByteStreams.newDataInput(message);
 			String subchannel = in.readUTF();
 			if(subchannel.equals("GoTo")) {
-				System.out.println("goto recieved");
 				PacketGoTo goTo = (PacketGoTo)ReportSystem.getGson().fromJson(in.readUTF(), PacketGoTo.class);
+				System.out.println("goto recieved: " + goTo.getPlayer() + " -> " + (goTo.getTarget() == null ? "null" : goTo.getTarget()));
 				if(Bukkit.getPlayer(goTo.getPlayer()) != null) {
 					BungeeHandler.sendGoTo(goTo.getPlayer(), true);
 					ReportSystem.performTeleport(goTo, Bukkit.getPlayer(goTo.getPlayer()));
