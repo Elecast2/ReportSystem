@@ -13,25 +13,5 @@ public class ReportSystemListener implements Listener {
 		CommandStaffList.queuePlayers.remove(event.getPlayer().getName());
 		CommandReport.cooldown.remove(event.getPlayer().getName());
 	}
-	
-	/*
-	@EventHandler
-	public void onServerConnect(ServerConnectEvent event) {
-		if(CommandGlobalSpy.getGlobalSpy().contains(event.getPlayer().getUniqueId())) {
-			if(CommandGlobalSpy.getQueue().containsKey(event.getPlayer().getUniqueId())) {
-				if(CommandGlobalSpy.getQueue().get(event.getPlayer().getUniqueId()).equals(event.getTarget().getName())) {
-					CommandGlobalSpy.getQueue().remove(event.getPlayer().getUniqueId());
-					return;
-				}
-			}
-			if(event.getPlayer().getServer() == null) {
-				return;
-			}
-			event.setCancelled(true);
-			CommandGlobalSpy.getQueue().put(event.getPlayer().getUniqueId(), event.getTarget().getName());
-			PluginMessageHandler.sendGoTo(event.getPlayer().getName(), event.getTarget(), true);
-		}
-	}
-	*/
 
 }

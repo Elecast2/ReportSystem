@@ -51,7 +51,6 @@ public class BungeeListener implements PluginMessageListener {
 				}
 			}
 			else if(subchannel.equals("GlobalSpy")) {
-				System.out.println("goto recieved");
 				String[] splited = in.readUTF().split(":");
 				UUID uid = UUID.fromString(splited[0]);
 				if(splited[1].equals("add")) {

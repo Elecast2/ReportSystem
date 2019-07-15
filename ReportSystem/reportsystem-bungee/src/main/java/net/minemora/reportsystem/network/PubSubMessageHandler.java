@@ -163,9 +163,6 @@ public class PubSubMessageHandler implements Listener {
 			}
 			else if(splited[1].equals("remove")) {
 				CommandGlobalSpy.getGlobalSpy().remove(UUID.fromString(splited[2]));
-				//if(CommandGlobalSpy.getQueue().containsKey(UUID.fromString(splited[2]))) {
-				//	CommandGlobalSpy.getQueue().remove(UUID.fromString(splited[2]));
-				//}
 			}
 		}
 		else if(splited[0].equals("ToggleReports")) {

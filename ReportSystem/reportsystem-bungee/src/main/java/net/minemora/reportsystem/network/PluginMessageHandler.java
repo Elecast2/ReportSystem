@@ -79,6 +79,7 @@ public class PluginMessageHandler implements Listener {
 		}
 		queue.add(player);
 		if(RedisBungee.getApi().getPlayersOnServer(serverInfo.getName()).size() == 0) {
+			System.out.println("No target GoTo sended because players on server = 0");
 			RedisBungee.getApi().sendChannelMessage("ReportSystem", "GoTo:" + player + ":" + serverInfo.getName());
 			return;
 		}
@@ -94,6 +95,7 @@ public class PluginMessageHandler implements Listener {
 			}
 			if(targetProxy != null) {
 				RedisBungee.getApi().sendChannelMessage("ReportSystem", "SendGoTo:" + targetProxy + ":" + serverInfo.getName() + ":" + msg);
+				System.out.println("Global GoTo sended because players on server-proxy = 0");
 			}
 			else {
 				System.out.println("targetProxy null on SendGoTo target");
@@ -134,6 +136,7 @@ public class PluginMessageHandler implements Listener {
 	
 	public static void sendMessage(String subchannel, String message, ServerInfo server) {
 		if(RedisBungee.getApi().getPlayersOnServer(server.getName()).size() == 0) {
+			System.out.println("players 0 on send GoTo to server");
 			return; //TODO accciones aca
 		}
         ByteArrayOutputStream stream = new ByteArrayOutputStream();

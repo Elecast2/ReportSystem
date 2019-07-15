@@ -2,9 +2,13 @@ package net.minemora.reportsystem.command;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
+
+import com.imaginarycode.minecraft.redisbungee.RedisBungee;
 
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
 import net.minemora.reportsystem.network.PluginMessageHandler;
@@ -27,31 +31,48 @@ public class CommandGoTo extends Command {
 			return; //TODO correct usage
 		}
 		ProxiedPlayer player = (ProxiedPlayer) sender;
+		String targetName;
+		if(args[0].startsWith("-")) {
+			targetName = args[1];
+		}
+		else {
+			targetName = args[0];
+		}
+		UUID uid = RedisBungee.getApi().getUuidFromName(targetName);
+		if(uid == null) {
+			player.sendMessage(TextComponent.fromLegacyText(Chat.format("&cEl jugador al que quieres ir no se encuentra conectado")));
+			return;
+		}
+		ServerInfo serverInfo = RedisBungee.getApi().getServerFor(uid);
+		if(serverInfo == null) {
+			player.sendMessage(TextComponent.fromLegacyText(Chat.format("&cEl jugador al que quieres ir no se encuentra conectado")));
+			return;
+		}
 		if(args[0].startsWith("-")) {
 			if(args.length == 1) {
 				return; //TODO correct usage
 			}
 			if(args[0].equals("-v")) {
-				if(assignedCache.containsKey(args[1])) {
-					String assigned = assignedCache.get(args[1]);
+				if(assignedCache.containsKey(targetName)) {
+					String assigned = assignedCache.get(targetName);
 					if(!player.getName().equals(assigned)) {
 						player.sendMessage(TextComponent.fromLegacyText(Chat.format("&cEl staff &b" + assigned 
-								+ " &cya se encuentra revisando a &4" + args[1] + " &e si aun asi deseas ir usa &a/goto -i " + args[1])));
+								+ " &cya se encuentra revisando a &4" + targetName + " &e si aun asi deseas ir usa &a/goto -i " + targetName)));
 						return;
 					}
 				}
-				PluginMessageHandler.sendGoTo(player.getName(), args[1], true);
-				assignedCache.put(args[1], player.getName());
+				PluginMessageHandler.sendGoTo(player.getName(), targetName, true);
+				assignedCache.put(targetName, player.getName());
 			}
 			else if(args[0].equals("-i")) {
-				PluginMessageHandler.sendGoTo(player.getName(), args[1], true);
+				PluginMessageHandler.sendGoTo(player.getName(), targetName, true);
 			}
 			else {
 				return; //TODO correct usage
 			}
 		}
 		else {
-			PluginMessageHandler.sendGoTo(player.getName(), args[0], false);
+			PluginMessageHandler.sendGoTo(player.getName(), targetName, false);
 		}
 	}
 
