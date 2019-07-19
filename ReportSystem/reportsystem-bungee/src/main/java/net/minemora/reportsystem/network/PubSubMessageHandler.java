@@ -17,6 +17,7 @@ import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
+import net.minemora.reportsystem.CachedReport;
 import net.minemora.reportsystem.Report;
 import net.minemora.reportsystem.ReportBanManager;
 import net.minemora.reportsystem.ReportSystem;
@@ -51,16 +52,16 @@ public class PubSubMessageHandler implements Listener {
 				return;
 			}
 			
-			Report.getReportedCache().add(uid);
+			CachedReport.getCache().put(report.getReported(), new CachedReport(report));
 			
-			BaseComponent[] header = TextComponent.fromLegacyText(Chat.format("&6&l&m---------------&f&l[&c&lREPORTE&f&l]&6&l&m---------------"));
+			BaseComponent[] header = TextComponent.fromLegacyText(Chat.format("&6&l&m--------------&f&l[ &c&lREPORTE &f&l]&6&l&m--------------"));
 			BaseComponent[] nick = TextComponent.fromLegacyText(Chat.format(" &e&lNick: &a" + report.getPlayer()));
 			BaseComponent[] reported = TextComponent.fromLegacyText(Chat.format(" &6&lReportado: &c" + report.getReported()));
 			BaseComponent[] server = TextComponent.fromLegacyText(Chat.format(" &e&lServidor: &a" + serverInfo.getName()));
 			BaseComponent[] reason = TextComponent.fromLegacyText(Chat.format(" &6&lRazón: &c") + report.getReason());
 			BaseComponent[] footer = TextComponent.fromLegacyText(Chat.format("&6&l&m---------------------------------------"));
 			
-			TextComponent click = new TextComponent(" Click para ir -> ");
+			TextComponent click = new TextComponent("   Click -> ");
 			click.setColor(ChatColor.GRAY);
 			TextComponent visible = new TextComponent("VISIBLE");
 			visible.setColor(ChatColor.GREEN);
@@ -70,9 +71,22 @@ public class PubSubMessageHandler implements Listener {
 			hidden.setColor(ChatColor.RED);
 			hidden.setBold(true);
 			hidden.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/goto -v " + report.getReported()));
+			TextComponent ban = new TextComponent("BANEAR");
+			ban.setColor(ChatColor.AQUA);
+			ban.setBold(true);
+			ban.setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/ban " + report.getReported() 
+				+ " 30d " + report.getReason() + " /report"));
+			TextComponent legit = new TextComponent("LEGIT");
+			legit.setColor(ChatColor.GOLD);
+			legit.setBold(true);
+			legit.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/legit " + report.getReported()));
 			click.addExtra(visible);
-			click.addExtra(new TextComponent("  "));
+			click.addExtra(new TextComponent(" "));
 			click.addExtra(hidden);
+			click.addExtra(new TextComponent(" "));
+			click.addExtra(ban);
+			click.addExtra(new TextComponent(" "));
+			click.addExtra(legit);
 			
 			
 			for(ProxiedPlayer player : ReportSystem.getPlugin().getProxy().getPlayers()) {
@@ -88,6 +102,7 @@ public class PubSubMessageHandler implements Listener {
 					player.sendMessage(new TextComponent(""));
 					player.sendMessage(click);
 					player.sendMessage(footer);
+					PluginMessageHandler.sendReport(player);
 				}
 			}
 		}
@@ -109,6 +124,11 @@ public class PubSubMessageHandler implements Listener {
 				if(player.hasPermission("staff.chat")) {
 					player.sendMessage(message);
 				}
+			}
+		}
+		else if(splited[0].equals("Assign")) {
+			if(CachedReport.getCache().containsKey(splited[2])) {
+				CachedReport.getCache().get(splited[2]).setAssigned(splited[1]);
 			}
 		}
 		else if(splited[0].equals("StaffListRequest")) {
@@ -178,6 +198,16 @@ public class PubSubMessageHandler implements Listener {
 		}
 		else if(splited[0].equals("Unban")) {
 			ReportBanManager.getBannedUuids().remove(UUID.fromString(splited[1]));
+		}
+		else if(splited[0].equals("Legit")) {
+			if(CachedReport.getCache().containsKey(splited[1])) {
+				CachedReport.getCache().get(splited[1]).setLegit(true);
+			}
+		}
+		else if(splited[0].equals("UnLegit")) {
+			if(CachedReport.getCache().containsKey(splited[1])) {
+				CachedReport.getCache().get(splited[1]).setLegit(false);
+			}
 		}
 	}
 }

@@ -20,6 +20,15 @@ public final class BungeeHandler {
 		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "ReportSystem");
 	}
 	
+	public static void sendGoTo(Player sender, String playerName, boolean online) {
+		if(online) {
+			sendMessage(sender, "GoTo", playerName + ":online");
+		}
+		else {
+			sendMessage(sender, "GoTo", playerName);
+		}
+	}
+	
 	public static void sendGoTo(String playerName, boolean online) {
 		if(online) {
 			sendMessage("GoTo", playerName + ":online");
@@ -30,14 +39,18 @@ public final class BungeeHandler {
 	}
 	
 	public static void sendMessage(String subChannel, String message) {
-		ByteArrayDataOutput out = ByteStreams.newDataOutput();
-		out.writeUTF(subChannel);
-		out.writeUTF(message);
 		Player player = getPlayer();
 		if(player == null) {
 			System.out.println("trying to send pmc message but random player is null");
 			return;
 		}
+		sendMessage(player, subChannel, message);
+    }
+	
+	public static void sendMessage(Player player, String subChannel, String message) {
+		ByteArrayDataOutput out = ByteStreams.newDataOutput();
+		out.writeUTF(subChannel);
+		out.writeUTF(message);
 		player.sendPluginMessage(ReportSystem.getPlugin(), "ReportSystem", out.toByteArray());
     }
 	

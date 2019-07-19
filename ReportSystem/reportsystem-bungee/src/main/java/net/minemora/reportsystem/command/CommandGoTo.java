@@ -11,12 +11,13 @@ import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.config.ServerInfo;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Command;
+import net.minemora.reportsystem.CachedReport;
 import net.minemora.reportsystem.network.PluginMessageHandler;
 import net.minemora.reportsystem.util.Chat;
 
 public class CommandGoTo extends Command {
 	
-	private static Map<String, String> assignedCache = new HashMap<>();
+	private static Map<String, String> lastGoTo = new HashMap<>();
 
 	public CommandGoTo() {
 		super("goto", "staff", "gt");
@@ -53,16 +54,18 @@ public class CommandGoTo extends Command {
 				return; //TODO correct usage
 			}
 			if(args[0].equals("-v")) {
-				if(assignedCache.containsKey(targetName)) {
-					String assigned = assignedCache.get(targetName);
-					if(!player.getName().equals(assigned)) {
-						player.sendMessage(TextComponent.fromLegacyText(Chat.format("&cEl staff &b" + assigned 
-								+ " &cya se encuentra revisando a &4" + targetName + " &e si aun asi deseas ir usa &a/goto -i " + targetName)));
-						return;
+				if(CachedReport.getCache().containsKey(targetName)) {
+					String assigned = CachedReport.getCache().get(targetName).getAssigned();
+					if(assigned != null) {
+						if(!player.getName().equals(assigned)) {
+							player.sendMessage(TextComponent.fromLegacyText(Chat.format("&cEl staff &b" + assigned 
+									+ " &cya se encuentra revisando a &4" + targetName + " &e si aun asi deseas ir usa &a/goto -i " + targetName)));
+							return;
+						}
 					}
 				}
 				PluginMessageHandler.sendGoTo(player.getName(), targetName, true);
-				assignedCache.put(targetName, player.getName());
+				RedisBungee.getApi().sendChannelMessage("ReportSystem", "Assign:" + player.getName() + ":" + targetName);
 			}
 			else if(args[0].equals("-i")) {
 				PluginMessageHandler.sendGoTo(player.getName(), targetName, true);
@@ -70,14 +73,15 @@ public class CommandGoTo extends Command {
 			else {
 				return; //TODO correct usage
 			}
+			lastGoTo.put(player.getName(), targetName);
 		}
 		else {
 			PluginMessageHandler.sendGoTo(player.getName(), targetName, false);
 		}
 	}
 
-	public static Map<String, String> getAssignedCache() {
-		return assignedCache;
+	public static Map<String, String> getLastGoTo() {
+		return lastGoTo;
 	}
 
 }

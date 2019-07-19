@@ -140,7 +140,8 @@ public class Database {
 	}
 	
 	public Map<Report, Long> getReporterHistory(UUID uid, String name) {
-		String sql = "SELECT reported_name,reason,date FROM rs_reports WHERE reporter_uuid = '" + uid + "';";
+		String sql = "SELECT reported_name,reason,date FROM rs_reports WHERE reporter_uuid = '" + uid 
+				+ "' ORDER BY rs_reports.date DESC LIMIT 10;";
 		Map<Report, Long> history = new HashMap<>();
 		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 			try (ResultSet result = stmt.executeQuery()) {
@@ -159,7 +160,8 @@ public class Database {
 	}
 	
 	public Map<Report, Long> getReportedHistory(UUID uid, String name) {
-		String sql = "SELECT reporter_name,reason,date FROM rs_reports WHERE reported_uuid = '" + uid + "';";
+		String sql = "SELECT reporter_name,reason,date FROM rs_reports WHERE reported_uuid = '" + uid 
+				+ "' ORDER BY rs_reports.date DESC LIMIT 10;";
 		Map<Report, Long> history = new HashMap<>();
 		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
 			try (ResultSet result = stmt.executeQuery()) {
@@ -175,6 +177,27 @@ public class Database {
 			 e.printStackTrace();
 		}
 		return history;
+	}
+	
+	public Map<Report, Long> getLastestReports(int limit) {
+		String sql = "SELECT reporter_name,reported_name,reason,date FROM rs_reports "
+				+ "ORDER BY rs_reports.date DESC LIMIT " + limit +";";
+		Map<Report, Long> rlist = new HashMap<>();
+		try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+			try (ResultSet result = stmt.executeQuery()) {
+				while (result.next()) {
+					String reportedName = result.getString("reported_name");
+					String reporterName = result.getString("reporter_name");
+					String reason = result.getString("reason");
+					long time = result.getLong("date");
+				    Report report = new Report(reporterName, reportedName, reason);
+				    rlist.put(report, time);
+				}
+			}
+		} catch (SQLException e) {
+			 e.printStackTrace();
+		}
+		return rlist;
 	}
 	
 	public void update(String sql) {

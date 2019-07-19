@@ -74,8 +74,6 @@ public class CommandREHistory extends Command implements TabExecutor {
 			return;
 		}
 		
-		int count = 1;
-		
 		player.sendMessage(TextComponent.fromLegacyText(Chat.format("&eLista de veces que &c" + playerName + " &eha reportado:")));
 		
 		for(Report report : reports.keySet()) {
@@ -84,13 +82,10 @@ public class CommandREHistory extends Command implements TabExecutor {
 		    String date = formatter.format(datec);
 		    player.sendMessage(TextComponent.fromLegacyText(Chat.format(" &a" + date + "&7: Reportó a &3" + report.getReported() 
 		    	+ " &7razón: &c" + report.getReason())));
-			if(count == 10) {
-				break;
-			}
 		}
 
-		player.sendMessage(TextComponent.fromLegacyText(Chat.format("&c" + playerName + " &eha reportado un total de &6&l" 
-				+ reports.size() + " &eveces")));
+		//player.sendMessage(TextComponent.fromLegacyText(Chat.format("&c" + playerName + " &eha reportado un total de &6&l" 
+		//		+ reports.size() + " &eveces")));
 	}
 	
 	@Override

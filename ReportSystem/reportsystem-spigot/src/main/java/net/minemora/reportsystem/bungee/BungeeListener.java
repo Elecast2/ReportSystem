@@ -7,9 +7,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
@@ -41,13 +43,13 @@ public class BungeeListener implements PluginMessageListener {
 				PacketGoTo goTo = (PacketGoTo)ReportSystem.getGson().fromJson(in.readUTF(), PacketGoTo.class);
 				System.out.println("goto recieved: " + goTo.getPlayer() + " -> " + (goTo.getTarget() == null ? "null" : goTo.getTarget()));
 				if(Bukkit.getPlayer(goTo.getPlayer()) != null) {
-					BungeeHandler.sendGoTo(goTo.getPlayer(), true);
+					BungeeHandler.sendGoTo(player, goTo.getPlayer(), true);
 					ReportSystem.performTeleport(goTo, Bukkit.getPlayer(goTo.getPlayer()));
 				}
 				else {
 					queue.put(goTo.getPlayer(), goTo);
 					ReportSystem.getPlugin().getQueueAddEvent().onQueueAdd(goTo.getPlayer(), goTo.getTarget());
-					BungeeHandler.sendGoTo(goTo.getPlayer(), false);
+					BungeeHandler.sendGoTo(player, goTo.getPlayer(), false);
 				}
 			}
 			else if(subchannel.equals("GlobalSpy")) {
@@ -68,6 +70,32 @@ public class BungeeListener implements PluginMessageListener {
 							CommandSpy.set(Bukkit.getPlayer(uid), false);
 						}
 					}
+				}
+			}
+			else if(subchannel.equals("Report")) {
+				String playerName = in.readUTF();
+				System.out.println("Report recieved to " + playerName);
+				Player staffPlayer = Bukkit.getPlayer(playerName);
+				if(staffPlayer == null) {
+					return;
+				}
+				if(!Bukkit.getVersion().contains("1.8")) {
+					staffPlayer.playSound(staffPlayer.getLocation(), Sound.valueOf("BLOCK_NOTE_BLOCK_BASS"), 10, 1.2f);
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							staffPlayer.playSound(staffPlayer.getLocation(), Sound.valueOf("BLOCK_NOTE_BLOCK_BASS"), 10, 1.6f);
+						}
+					}.runTaskLater(ReportSystem.getPlugin(), 5L);
+				}
+				else {
+					staffPlayer.playSound(staffPlayer.getLocation(), Sound.NOTE_BASS, 10, 1.2f);
+					new BukkitRunnable() {
+						@Override
+						public void run() {
+							staffPlayer.playSound(staffPlayer.getLocation(), Sound.NOTE_BASS, 10, 1.6f);
+						}
+					}.runTaskLater(ReportSystem.getPlugin(), 5L);
 				}
 			}
 		} catch (Exception e) {

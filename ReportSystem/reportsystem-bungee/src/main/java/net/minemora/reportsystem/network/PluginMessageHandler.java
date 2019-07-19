@@ -1,17 +1,18 @@
 package net.minemora.reportsystem.network;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
 import com.imaginarycode.minecraft.redisbungee.RedisBungee;
 
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 import net.md_5.bungee.api.event.PluginMessageEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -106,33 +107,8 @@ public class PluginMessageHandler implements Listener {
 		sendMessage("GoTo", msg, serverInfo);
 	}
 	
-	public static void sendGoTo(String player, ServerInfo serverInfo, boolean vanish) {
-		PacketGoTo pgt = new PacketGoTo(player, null, vanish);
-		String msg = ReportSystem.getGson().toJson(pgt);
-		queue.add(player);
-		if(RedisBungee.getApi().getPlayersOnServer(serverInfo.getName()).size() == 0) {
-			RedisBungee.getApi().sendChannelMessage("ReportSystem", "GoTo:" + player + ":" + serverInfo.getName());
-			return;
-		}
-		if(serverInfo.getPlayers().size() == 0) {
-			String targetProxy = null;
-			for(String proxyName : RedisBungee.getApi().getAllServers()) {
-				if(!proxyName.equals(RedisBungee.getApi().getServerId())) {
-					if(Util.getPlayersOnServer(serverInfo.getName(), proxyName) > 0) {
-						targetProxy = proxyName;
-						break;
-					}
-				}
-			}
-			if(targetProxy != null) {
-				RedisBungee.getApi().sendChannelMessage("ReportSystem", "SendGoTo:" + targetProxy + ":" + serverInfo.getName() + ":" + msg);
-			}
-			else {
-				System.out.println("targetProxy null on SendGoTo server");
-			}
-			return;
-		}
-		sendMessage("GoTo", msg, serverInfo);
+	public static void sendReport(ProxiedPlayer player) {
+		sendMessage("Report", player.getName(), player.getServer().getInfo());
 	}
 	
 	public static void sendMessage(String subchannel, String message, ServerInfo server) {
@@ -140,15 +116,10 @@ public class PluginMessageHandler implements Listener {
 			System.out.println("players 0 on send GoTo to server");
 			return; //TODO accciones aca
 		}
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        DataOutputStream out = new DataOutputStream(stream);
-        try {
-        	out.writeUTF(subchannel);
-			out.writeUTF(message);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-        server.sendData("ReportSystem", stream.toByteArray());
+		ByteArrayDataOutput out = ByteStreams.newDataOutput();
+    	out.writeUTF(subchannel);
+		out.writeUTF(message);
+        server.sendData("ReportSystem", out.toByteArray());
 	}
 	
 	public static Set<String> getQueue() {
