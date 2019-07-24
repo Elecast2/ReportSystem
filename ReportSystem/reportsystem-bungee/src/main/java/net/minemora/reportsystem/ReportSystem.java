@@ -24,11 +24,11 @@ public class ReportSystem extends Plugin {
     public void onEnable() {
 		plugin = this;
 		CommandManager.registerCommands(this);
-		getProxy().registerChannel("ReportSystem");
-		RedisBungee.getApi().registerPubSubChannels("ReportSystem");
-		getProxy().getPluginManager().registerListener(this, new PubSubMessageHandler());
 		getProxy().getPluginManager().registerListener(this, new PluginMessageHandler());
 		getProxy().getPluginManager().registerListener(this, new ReportSystemListener());
+		getProxy().registerChannel("legacy:reportsystem");
+		RedisBungee.getApi().registerPubSubChannels("ReportSystem");
+		getProxy().getPluginManager().registerListener(this, new PubSubMessageHandler());
 		ConfigMain.getInstance().setup();
 		Database.getDatabase().setup();
 		ReportBanManager.setup();

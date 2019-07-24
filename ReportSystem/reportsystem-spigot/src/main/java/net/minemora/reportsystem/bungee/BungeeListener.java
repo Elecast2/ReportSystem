@@ -33,7 +33,7 @@ public class BungeeListener implements PluginMessageListener {
 
 	@Override
 	public void onPluginMessageReceived(String channel, Player player, byte[] message) {
-		if (!channel.equals("ReportSystem")) {
+		if (!channel.equals("legacy:reportsystem")) {
 			  return;
 		}
 		try {
@@ -104,7 +104,7 @@ public class BungeeListener implements PluginMessageListener {
 	}
 	
 	public static void setup(Plugin plugin) {
-		plugin.getServer().getMessenger().registerIncomingPluginChannel(plugin, "ReportSystem", getInstance());
+		plugin.getServer().getMessenger().registerIncomingPluginChannel(plugin, "legacy:reportsystem", getInstance());
 	}
 
 	public static BungeeListener getInstance() {

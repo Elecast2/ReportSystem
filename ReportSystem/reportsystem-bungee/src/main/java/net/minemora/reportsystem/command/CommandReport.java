@@ -1,8 +1,8 @@
 package net.minemora.reportsystem.command;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -18,6 +18,7 @@ import net.minemora.reportsystem.CachedReport;
 import net.minemora.reportsystem.Report;
 import net.minemora.reportsystem.ReportBanManager;
 import net.minemora.reportsystem.util.Chat;
+import net.minemora.reportsystem.util.Util;
 
 public class CommandReport extends Command implements TabExecutor {
 	
@@ -54,7 +55,7 @@ public class CommandReport extends Command implements TabExecutor {
 				return;
 			}
 			
-			if(CachedReport.getCache().containsKey(args[0])) {
+			if(Util.containsIgnoreCase(CachedReport.getCache().keySet() ,args[0])) {
 				long time = CachedReport.getCache().get(args[0]).getTime();
 				if((System.currentTimeMillis() - time) < 600000) {
 					player.sendMessage(TextComponent.fromLegacyText(Chat.format("&c¡Este jugador ya ha sido reportado recientemente!")));
@@ -103,32 +104,15 @@ public class CommandReport extends Command implements TabExecutor {
 			new Report(player.getName(), args[0], reason).send();
 		}
 	}
-
+	
 	@Override
 	public Iterable<String> onTabComplete(CommandSender sender, String[] args) {
 		if (!(sender instanceof ProxiedPlayer)) {
 			return new ArrayList<String>();
 		}		
-		List<String> result = new ArrayList<>();  
-		ProxiedPlayer player = (ProxiedPlayer) sender;
-		if(args.length == 1) {
-			for(UUID uid : RedisBungee.getApi().getPlayersOnServer(player.getServer().getInfo().getName())) {
-				String playerName = RedisBungee.getApi().getNameFromUuid(uid);
-				if(!playerName.equals(player.getName())) {
-					result.add(playerName);
-				}
-			}
+		if(args.length == 2) {
+			return new ArrayList<>(Arrays.asList(reasons));
 		}
-		else if (args.length == 2) {
-			for(UUID uid : RedisBungee.getApi().getPlayersOnServer(player.getServer().getInfo().getName())) {
-				String playerName = RedisBungee.getApi().getNameFromUuid(uid);
-				if(!playerName.equals(player.getName())) {
-					if(playerName.toLowerCase().startsWith(args[1])) {
-						result.add(playerName);
-					}
-				}
-			}
-		}
-		return result;
+		return new ArrayList<String>();
 	}
 }

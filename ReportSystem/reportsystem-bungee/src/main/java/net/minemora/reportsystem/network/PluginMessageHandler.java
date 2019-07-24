@@ -27,7 +27,7 @@ public class PluginMessageHandler implements Listener {
 	
 	@EventHandler
     public void onPluginMessage(PluginMessageEvent event) {
-        if (!event.getTag().equals("ReportSystem")) {
+        if (!event.getTag().equals("legacy:reportsystem")) {
             return;
         }
         if (!(event.getSender() instanceof Server)) {
@@ -105,6 +105,7 @@ public class PluginMessageHandler implements Listener {
 			return;
 		}
 		sendMessage("GoTo", msg, serverInfo);
+		System.out.println("Sending message on same proxy to server: " + serverInfo.getName());
 	}
 	
 	public static void sendReport(ProxiedPlayer player) {
@@ -113,13 +114,19 @@ public class PluginMessageHandler implements Listener {
 	
 	public static void sendMessage(String subchannel, String message, ServerInfo server) {
 		if(RedisBungee.getApi().getPlayersOnServer(server.getName()).size() == 0) {
-			System.out.println("players 0 on send GoTo to server");
-			return; //TODO accciones aca
+			System.out.println("players 0 on sending message to server to server");
+			return;
 		}
-		ByteArrayDataOutput out = ByteStreams.newDataOutput();
-    	out.writeUTF(subchannel);
-		out.writeUTF(message);
-        server.sendData("ReportSystem", out.toByteArray());
+		ReportSystem.getPlugin().getProxy().getScheduler().runAsync(ReportSystem.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+            	ByteArrayDataOutput out = ByteStreams.newDataOutput();
+            	out.writeUTF(subchannel);
+        		out.writeUTF(message);
+                server.sendData("legacy:reportsystem", out.toByteArray());
+            }
+		});
+		
 	}
 	
 	public static Set<String> getQueue() {

@@ -59,7 +59,7 @@ public class PubSubMessageHandler implements Listener {
 			BaseComponent[] reported = TextComponent.fromLegacyText(Chat.format(" &6&lReportado: &c" + report.getReported()));
 			BaseComponent[] server = TextComponent.fromLegacyText(Chat.format(" &e&lServidor: &a" + serverInfo.getName()));
 			BaseComponent[] reason = TextComponent.fromLegacyText(Chat.format(" &6&lRazón: &c") + report.getReason());
-			BaseComponent[] footer = TextComponent.fromLegacyText(Chat.format("&6&l&m---------------------------------------"));
+			BaseComponent[] footer = TextComponent.fromLegacyText(Chat.format("&6&l&m--------------------------------------"));
 			
 			TextComponent click = new TextComponent("   Click -> ");
 			click.setColor(ChatColor.GRAY);
@@ -171,11 +171,13 @@ public class PubSubMessageHandler implements Listener {
 		else if(splited[0].equals("SendGoTo")) {
 			String targetProxy = splited[1];
 			if(!RedisBungee.getApi().getServerId().equals(targetProxy)) {
+				System.out.println("SendGoTo recieved but this is not target proxy");
 				return;
 			}
 			String serverName = splited[2];
 			String msg = event.getMessage().split(":",4)[3];
 			PluginMessageHandler.sendMessage("GoTo", msg, ReportSystem.getPlugin().getProxy().getServerInfo(serverName));
+			System.out.println("SendGoTo recieved: " + msg);
 		}
 		else if(splited[0].equals("GlobalSpy")) {
 			if(splited[1].equals("add")) {

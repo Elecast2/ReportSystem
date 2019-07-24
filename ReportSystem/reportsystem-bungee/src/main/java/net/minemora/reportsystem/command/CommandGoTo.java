@@ -14,6 +14,7 @@ import net.md_5.bungee.api.plugin.Command;
 import net.minemora.reportsystem.CachedReport;
 import net.minemora.reportsystem.network.PluginMessageHandler;
 import net.minemora.reportsystem.util.Chat;
+import net.minemora.reportsystem.util.Util;
 
 public class CommandGoTo extends Command {
 	
@@ -54,7 +55,7 @@ public class CommandGoTo extends Command {
 				return; //TODO correct usage
 			}
 			if(args[0].equals("-v")) {
-				if(CachedReport.getCache().containsKey(targetName)) {
+				if(Util.containsIgnoreCase(CachedReport.getCache().keySet(), targetName)) {
 					String assigned = CachedReport.getCache().get(targetName).getAssigned();
 					if(assigned != null) {
 						if(!player.getName().equals(assigned)) {

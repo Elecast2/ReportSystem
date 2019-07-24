@@ -17,7 +17,7 @@ public final class BungeeHandler {
 	
 	public static void setup(Plugin pl) {
 		plugin = pl;
-		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "ReportSystem");
+		plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "legacy:reportsystem");
 	}
 	
 	public static void sendGoTo(Player sender, String playerName, boolean online) {
@@ -51,7 +51,7 @@ public final class BungeeHandler {
 		ByteArrayDataOutput out = ByteStreams.newDataOutput();
 		out.writeUTF(subChannel);
 		out.writeUTF(message);
-		player.sendPluginMessage(ReportSystem.getPlugin(), "ReportSystem", out.toByteArray());
+		player.sendPluginMessage(ReportSystem.getPlugin(), "legacy:reportsystem", out.toByteArray());
     }
 	
 	private static Player getPlayer() {
