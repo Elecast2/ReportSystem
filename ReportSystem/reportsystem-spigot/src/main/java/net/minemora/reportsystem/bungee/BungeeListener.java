@@ -48,7 +48,12 @@ public class BungeeListener implements PluginMessageListener {
 				}
 				else {
 					queue.put(goTo.getPlayer(), goTo);
-					ReportSystem.getPlugin().getQueueAddEvent().onQueueAdd(goTo.getPlayer(), goTo.getTarget());
+					if(Bukkit.getPlayer(goTo.getTarget()) != null) {
+						ReportSystem.getPlugin().getQueueAddEvent().onQueueAdd(goTo.getPlayer(), Bukkit.getPlayer(goTo.getTarget()).getName());
+					}
+					else {
+						ReportSystem.getPlugin().getQueueAddEvent().onQueueAdd(goTo.getPlayer(), goTo.getTarget());
+					}
 					BungeeHandler.sendGoTo(player, goTo.getPlayer(), false);
 				}
 			}

@@ -52,11 +52,25 @@ public class PubSubMessageHandler implements Listener {
 				return;
 			}
 			
-			CachedReport.getCache().put(report.getReported(), new CachedReport(report));
+			int rtimes = 0;
+			
+			if(CachedReport.getCache().containsKey(report.getReported())) {
+				rtimes = CachedReport.getCache().get(report.getReported()).getReportedTimes();
+			}
+			CachedReport creport = new CachedReport(report);
+			creport.setReportedTimes(creport.getReportedTimes() + rtimes);
+			CachedReport.getCache().put(report.getReported(), creport);
 			
 			BaseComponent[] header = TextComponent.fromLegacyText(Chat.format("&6&l&m--------------&f&l[ &c&lREPORTE &f&l]&6&l&m--------------"));
 			BaseComponent[] nick = TextComponent.fromLegacyText(Chat.format(" &e&lNick: &a" + report.getPlayer()));
-			BaseComponent[] reported = TextComponent.fromLegacyText(Chat.format(" &6&lReportado: &c" + report.getReported()));
+			BaseComponent[] reported;
+			if(creport.getReportedTimes() > 1) {
+				reported = TextComponent.fromLegacyText(Chat.format(
+						" &6&lReportado: &c" + report.getReported() + " &7(&e" + creport.getReportedTimes() + "&7)"));
+			}
+			else {
+				reported = TextComponent.fromLegacyText(Chat.format(" &6&lReportado: &c" + report.getReported()));
+			}
 			BaseComponent[] server = TextComponent.fromLegacyText(Chat.format(" &e&lServidor: &a" + serverInfo.getName()));
 			BaseComponent[] reason = TextComponent.fromLegacyText(Chat.format(" &6&lRazón: &c") + report.getReason());
 			BaseComponent[] footer = TextComponent.fromLegacyText(Chat.format("&6&l&m--------------------------------------"));
@@ -176,8 +190,13 @@ public class PubSubMessageHandler implements Listener {
 			}
 			String serverName = splited[2];
 			String msg = event.getMessage().split(":",4)[3];
-			PluginMessageHandler.sendMessage("GoTo", msg, ReportSystem.getPlugin().getProxy().getServerInfo(serverName));
 			System.out.println("SendGoTo recieved: " + msg);
+			ReportSystem.getPlugin().getProxy().getScheduler().runAsync(ReportSystem.getPlugin(), new Runnable() {
+	            @Override
+	            public void run() {
+	            	PluginMessageHandler.sendMessage("GoTo", msg, ReportSystem.getPlugin().getProxy().getServerInfo(serverName), false);
+	            }
+			});
 		}
 		else if(splited[0].equals("GlobalSpy")) {
 			if(splited[1].equals("add")) {
@@ -209,6 +228,12 @@ public class PubSubMessageHandler implements Listener {
 		else if(splited[0].equals("UnLegit")) {
 			if(CachedReport.getCache().containsKey(splited[1])) {
 				CachedReport.getCache().get(splited[1]).setLegit(false);
+			}
+		}
+		else if(splited[0].equals("AddReport")) {
+			if(CachedReport.getCache().containsKey(splited[1])) {
+				CachedReport crep = CachedReport.getCache().get(splited[1]);
+				crep.setReportedTimes(crep.getReportedTimes() + 1);
 			}
 		}
 	}

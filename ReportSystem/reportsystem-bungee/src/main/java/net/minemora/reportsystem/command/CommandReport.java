@@ -18,7 +18,6 @@ import net.minemora.reportsystem.CachedReport;
 import net.minemora.reportsystem.Report;
 import net.minemora.reportsystem.ReportBanManager;
 import net.minemora.reportsystem.util.Chat;
-import net.minemora.reportsystem.util.Util;
 
 public class CommandReport extends Command implements TabExecutor {
 	
@@ -55,10 +54,12 @@ public class CommandReport extends Command implements TabExecutor {
 				return;
 			}
 			
-			if(Util.containsIgnoreCase(CachedReport.getCache().keySet() ,args[0])) {
-				long time = CachedReport.getCache().get(args[0]).getTime();
+			if(CachedReport.getCache().containsKey(args[0])) {
+				CachedReport crep = CachedReport.getCache().get(args[0]);
+				long time = crep.getTime();
 				if((System.currentTimeMillis() - time) < 600000) {
 					player.sendMessage(TextComponent.fromLegacyText(Chat.format("&c¡Este jugador ya ha sido reportado recientemente!")));
+					RedisBungee.getApi().sendChannelMessage("ReportSystem", "AddReport:" + args[0]);
 					return;
 				}
 			}

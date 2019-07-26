@@ -123,8 +123,14 @@ public class CommandReportList extends Command {
 					msg.addExtra(ban);
 					msg.addExtra(new TextComponent(" "));
 					msg.addExtra(legit);
+					
+					String extra = "";
+					int rtimes = CachedReport.getCache().get(report.getReported()).getReportedTimes();
+					if(rtimes > 1) {
+						extra = " &7(&e" + rtimes +"&7)";
+					}
 				    
-				    msg.addExtra(new TextComponent(TextComponent.fromLegacyText(Chat.format(" &a" + report.getReported() 
+				    msg.addExtra(new TextComponent(TextComponent.fromLegacyText(Chat.format(" &a" + report.getReported() + extra
 				    	+ " &b" + serverInfo.getName() + " &c" + report.getReason()))));				
 
 				    player.sendMessage(msg);

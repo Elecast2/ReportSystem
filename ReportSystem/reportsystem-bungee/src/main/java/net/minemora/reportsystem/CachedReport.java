@@ -1,7 +1,7 @@
 package net.minemora.reportsystem;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import com.imaginarycode.minecraft.redisbungee.RedisBungee;
@@ -10,12 +10,13 @@ import net.md_5.bungee.api.config.ServerInfo;
 
 public class CachedReport {
 	
-	private static Map<String, CachedReport> cache = new HashMap<>();
+	private static Map<String, CachedReport> cache = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 	
 	private Report report;
 	private long time;
 	private boolean legit = false;
 	private String assigned;
+	private int reportedTimes = 1;
 
 	public CachedReport(Report report) {
 		this.report = report;
@@ -88,6 +89,14 @@ public class CachedReport {
 
 	public static Map<String, CachedReport> getCache() {
 		return cache;
+	}
+
+	public int getReportedTimes() {
+		return reportedTimes;
+	}
+
+	public void setReportedTimes(int reportedTimes) {
+		this.reportedTimes = reportedTimes;
 	}
 
 }

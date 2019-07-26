@@ -14,7 +14,6 @@ import net.md_5.bungee.api.plugin.Command;
 import net.minemora.reportsystem.CachedReport;
 import net.minemora.reportsystem.network.PluginMessageHandler;
 import net.minemora.reportsystem.util.Chat;
-import net.minemora.reportsystem.util.Util;
 
 public class CommandGoTo extends Command {
 	
@@ -55,7 +54,7 @@ public class CommandGoTo extends Command {
 				return; //TODO correct usage
 			}
 			if(args[0].equals("-v")) {
-				if(Util.containsIgnoreCase(CachedReport.getCache().keySet(), targetName)) {
+				if(CachedReport.getCache().containsKey(targetName)) {
 					String assigned = CachedReport.getCache().get(targetName).getAssigned();
 					if(assigned != null) {
 						if(!player.getName().equals(assigned)) {
@@ -70,11 +69,18 @@ public class CommandGoTo extends Command {
 			}
 			else if(args[0].equals("-i")) {
 				PluginMessageHandler.sendGoTo(player.getName(), targetName, true);
+				if(CachedReport.getCache().containsKey(targetName)) {
+					String assigned = CachedReport.getCache().get(targetName).getAssigned();
+					if(assigned == null) {
+						RedisBungee.getApi().sendChannelMessage("ReportSystem", "Assign:" + player.getName() + ":" + targetName);
+					}
+				}
 			}
 			else {
 				return; //TODO correct usage
 			}
 			lastGoTo.put(player.getName(), targetName);
+			player.sendMessage(TextComponent.fromLegacyText(Chat.format("&aEnviando...")));
 		}
 		else {
 			PluginMessageHandler.sendGoTo(player.getName(), targetName, false);

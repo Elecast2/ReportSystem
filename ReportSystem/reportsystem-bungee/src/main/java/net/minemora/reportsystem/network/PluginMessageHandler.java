@@ -60,73 +60,83 @@ public class PluginMessageHandler implements Listener {
 	}
 	
 	public static void sendGlobalSpy(UUID uid, boolean add) {
-		for(ServerInfo serverInfo : ReportSystem.getPlugin().getProxy().getServers().values()) {
-			sendMessage("GlobalSpy", uid + ":" + (add ? "add" : "remove"), serverInfo);
-		}
+		ReportSystem.getPlugin().getProxy().getScheduler().runAsync(ReportSystem.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+				for(ServerInfo serverInfo : ReportSystem.getPlugin().getProxy().getServers().values()) {
+					sendMessage("GlobalSpy", uid + ":" + (add ? "add" : "remove"), serverInfo, true);
+				}
+            }
+		});
 	}
 	
 	public static void sendGoTo(String player, String target, boolean vanish) {
-		PacketGoTo pgt = new PacketGoTo(player, target, vanish);
-		String msg = ReportSystem.getGson().toJson(pgt);
-		UUID uid = RedisBungee.getApi().getUuidFromName(target);
-		if(uid == null) {
-			System.out.println("El objetivo no se encuentra conectado 001" + target);
-			return;
-		}
-		System.out.println(uid);
-		ServerInfo serverInfo = RedisBungee.getApi().getServerFor(uid);
-		if(serverInfo == null) {
-			System.out.println("El objetivo no se encuentra conectado 002 " + target);
-			return;
-		}
-		queue.add(player);
-		if(RedisBungee.getApi().getPlayersOnServer(serverInfo.getName()).size() == 0) {
-			System.out.println("No target GoTo sended because players on server = 0");
-			RedisBungee.getApi().sendChannelMessage("ReportSystem", "GoTo:" + player + ":" + serverInfo.getName());
-			return;
-		}
-		if(serverInfo.getPlayers().size() == 0) {
-			String targetProxy = null;
-			for(String proxyName : RedisBungee.getApi().getAllServers()) {
-				if(!proxyName.equals(RedisBungee.getApi().getServerId())) {
-					if(Util.getPlayersOnServer(serverInfo.getName(), proxyName) > 0) {
-						targetProxy = proxyName;
-						break;
-					}
+		ReportSystem.getPlugin().getProxy().getScheduler().runAsync(ReportSystem.getPlugin(), new Runnable() {
+            @Override
+            public void run() {
+				PacketGoTo pgt = new PacketGoTo(player, target, vanish);
+				String msg = ReportSystem.getGson().toJson(pgt);
+				UUID uid = RedisBungee.getApi().getUuidFromName(target);
+				if(uid == null) {
+					System.out.println("El objetivo no se encuentra conectado 001" + target);
+					return;
 				}
-			}
-			if(targetProxy != null) {
-				RedisBungee.getApi().sendChannelMessage("ReportSystem", "SendGoTo:" + targetProxy + ":" + serverInfo.getName() + ":" + msg);
-				System.out.println("Global GoTo sended because players on server-proxy = 0");
-			}
-			else {
-				System.out.println("targetProxy null on SendGoTo target");
-			}
-			return;
-		}
-		sendMessage("GoTo", msg, serverInfo);
-		System.out.println("Sending message on same proxy to server: " + serverInfo.getName());
+				System.out.println(uid);
+				ServerInfo serverInfo = RedisBungee.getApi().getServerFor(uid);
+				if(serverInfo == null) {
+					System.out.println("El objetivo no se encuentra conectado 002 " + target);
+					return;
+				}
+				queue.add(player);
+				if(RedisBungee.getApi().getPlayersOnServer(serverInfo.getName()).size() == 0) {
+					System.out.println("No target GoTo sended because players on server = 0");
+					RedisBungee.getApi().sendChannelMessage("ReportSystem", "GoTo:" + player + ":" + serverInfo.getName());
+					return;
+				}
+				if(serverInfo.getPlayers().size() == 0) {
+					String targetProxy = null;
+					for(String proxyName : RedisBungee.getApi().getAllServers()) {
+						if(!proxyName.equals(RedisBungee.getApi().getServerId())) {
+							if(Util.getPlayersOnServer(serverInfo.getName(), proxyName) > 0) {
+								targetProxy = proxyName;
+								break;
+							}
+						}
+					}
+					if(targetProxy != null) {
+						RedisBungee.getApi().sendChannelMessage("ReportSystem", "SendGoTo:" + targetProxy + ":" 
+								+ serverInfo.getName() + ":" + msg);
+						System.out.println("Global GoTo sended because players on server-proxy = 0");
+					}
+					else {
+						System.out.println("targetProxy null on SendGoTo target");
+					}
+					return;
+				}
+				sendMessage("GoTo", msg, serverInfo, false);
+				System.out.println("Sending message on same proxy to server: " + serverInfo.getName());
+            }
+        });
 	}
 	
 	public static void sendReport(ProxiedPlayer player) {
-		sendMessage("Report", player.getName(), player.getServer().getInfo());
+		sendMessage("Report", player.getName(), player.getServer().getInfo(), false);
 	}
 	
-	public static void sendMessage(String subchannel, String message, ServerInfo server) {
+	public static void sendMessage(String subchannel, String message, ServerInfo server, boolean queue) {
 		if(RedisBungee.getApi().getPlayersOnServer(server.getName()).size() == 0) {
 			System.out.println("players 0 on sending message to server to server");
 			return;
 		}
-		ReportSystem.getPlugin().getProxy().getScheduler().runAsync(ReportSystem.getPlugin(), new Runnable() {
-            @Override
-            public void run() {
-            	ByteArrayDataOutput out = ByteStreams.newDataOutput();
-            	out.writeUTF(subchannel);
-        		out.writeUTF(message);
-                server.sendData("legacy:reportsystem", out.toByteArray());
-            }
-		});
-		
+    	ByteArrayDataOutput out = ByteStreams.newDataOutput();
+    	out.writeUTF(subchannel);
+		out.writeUTF(message);
+		if(queue) {
+			server.sendData("legacy:reportsystem", out.toByteArray(), true);
+		}
+		else {
+			server.sendData("legacy:reportsystem", out.toByteArray());
+		}
 	}
 	
 	public static Set<String> getQueue() {

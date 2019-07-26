@@ -19,7 +19,6 @@ import net.minemora.reportsystem.command.CommandSpy;
 import net.minemora.reportsystem.command.PlayerTabCompleter;
 import net.minemora.reportsystem.packet.PacketGoTo;
 import net.minemora.reportsystem.util.ChatUtils;
-import net.minemora.reportsystem.util.UtilParticles;
 
 public class ReportSystem extends JavaPlugin {
 	
@@ -88,14 +87,15 @@ public class ReportSystem extends JavaPlugin {
 			if(!ReportSystemAPI.isSpy(player.getName())) {
 				getPlugin().getVisibilityManager().toggleSpy(player, true);
 				ReportSystem.getSpectators().add(player.getName());
-				player.sendMessage(ChatUtils.format("&aEstas en modo &c&lEspiar")); //TODO LANG
+				//player.sendMessage(ChatUtils.format("&aEstas en modo &c&lEspiar")); //TODO LANG
 				if(target != null) {
 					player.showPlayer(target);
-					UtilParticles.drawLineToFollowPlayer(player, target);
+					//UtilParticles.drawLineToFollowPlayer(player, target);
 				}
 			}
 		}
 		if(target != null) {
+			player.sendMessage(ChatUtils.format("&aHas sido enviado a &b" + target.getName())); //TODO LANG
 			player.teleport(target);
 		}
 	}

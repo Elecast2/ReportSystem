@@ -2,7 +2,6 @@ package net.minemora.reportsystem.util;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -27,15 +26,6 @@ public final class Util {
 			}
 		}
 		return count;
-	}
-	
-	public static boolean containsIgnoreCase(Set<String> list, String keyWord) {
-		for(String key : list) {
-			if(key.equalsIgnoreCase(keyWord)) {
-				return true;
-			}
-		}
-		return false;
 	}
 
 }
