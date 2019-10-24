@@ -43,7 +43,7 @@ public class CommandReportList extends Command {
 		ReportSystem.getPlugin().getProxy().getScheduler().runAsync(ReportSystem.getPlugin(), new Runnable() {
 			@Override
 			public void run() {
-				LinkedHashMap<Report, Long> reports = Util.sort(Database.getDatabase().getLastestReports(25));
+				LinkedHashMap<Report, Long> reports = Util.sort(Database.getDatabase().getLastestReports(40));
 				
 				Set<String> listed = new HashSet<String>();
 				

@@ -35,9 +35,11 @@ public class CommandRUnban extends Command implements TabExecutor {
 			if(uid == null) {
 				online = false;
 			}
-			ServerInfo serverInfo = RedisBungee.getApi().getServerFor(uid);
-			if(serverInfo == null) {
-				online = false;
+			if(online) {
+				ServerInfo serverInfo = RedisBungee.getApi().getServerFor(uid);
+				if(serverInfo == null) {
+					online = false;
+				}
 			}
 			if(online) {
 				ReportBanManager.unban(uid);

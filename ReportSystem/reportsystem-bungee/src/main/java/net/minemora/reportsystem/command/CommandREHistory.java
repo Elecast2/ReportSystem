@@ -40,9 +40,11 @@ public class CommandREHistory extends Command implements TabExecutor {
 			if(uid == null) {
 				online = false;
 			}
-			ServerInfo serverInfo = RedisBungee.getApi().getServerFor(uid);
-			if(serverInfo == null) {
-				online = false;
+			if(online) {
+				ServerInfo serverInfo = RedisBungee.getApi().getServerFor(uid); //TODO reparar npe aqui
+				if(serverInfo == null) {
+					online = false;
+				}
 			}
 			
 			final boolean isOn = online;

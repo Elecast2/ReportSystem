@@ -10,6 +10,8 @@ commands:
       usage: /<command>
    invsee:
       usage: /<command>
+   alt:
+      usage: /<command>
    clearchat:
       usage: /<command>
       aliases: [cchat]
