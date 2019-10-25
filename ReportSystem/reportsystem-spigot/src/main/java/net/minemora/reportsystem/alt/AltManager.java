@@ -9,7 +9,6 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
@@ -18,7 +17,6 @@ import net.minecraft.server.v1_8_R3.EntityHuman;
 import net.minecraft.server.v1_8_R3.PacketPlayOutEntityDestroy;
 import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
-import net.minemora.reportsystem.ReportSystem;
 import net.minemora.reportsystem.util.ChatUtils;
 
 public class AltManager {
@@ -26,10 +24,8 @@ public class AltManager {
 	private static AltManager instance;
 	
 	private Map<UUID, AltPlayer> altPlayers;
-	private ReportSystem plugin;
 	
-	private AltManager(ReportSystem plugin) {
-        this.plugin = plugin;
+	private AltManager() {
         this.altPlayers = new HashMap<>();
     }
 	
@@ -40,12 +36,12 @@ public class AltManager {
 	public void setGameProfile(Player player, boolean alt) {
         try {
         	EntityHuman entityHuman = ((CraftPlayer) player).getHandle();
-            Field gp = entityHuman.getClass().getDeclaredField("bH");
+            Field gp = entityHuman.getClass().getSuperclass().getDeclaredField("bH");
             gp.setAccessible(true);
             if (alt) {
-                gp.set(entityHuman, getPlayer(player).getOldProfile());
-            } else {
                 gp.set(entityHuman, getPlayer(player).getNewProfile());
+            } else {
+                gp.set(entityHuman, getPlayer(player).getOldProfile());
             }
             gp.setAccessible(false);
         }
@@ -56,6 +52,37 @@ public class AltManager {
             }
         }
     }
+	
+	public void restoreGameProfile(Player player) {
+		try {
+        	EntityHuman entityHuman = ((CraftPlayer) player).getHandle();
+            Field gp = entityHuman.getClass().getSuperclass().getDeclaredField("bH");
+            gp.setAccessible(true);
+			gp.set(entityHuman, getPlayer(player).getOldProfile());
+		}
+		catch (Exception e) {
+            e.printStackTrace();
+            if (altPlayers.containsKey(player.getUniqueId())) {
+                this.altPlayers.remove(player.getUniqueId());
+            }
+        }
+	}
+	
+	public void updateAltPlayers(Player player) {
+		for(AltPlayer ap : altPlayers.values()) {
+			Player app = Bukkit.getPlayer(ap.getUUID());
+			if(app == null) {
+				continue;
+			}
+			CraftPlayer craftPlayer = ((CraftPlayer) app);
+			((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, craftPlayer.getHandle()));
+			setGameProfile(app, true);
+			((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, craftPlayer.getHandle()));
+			((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityDestroy(app.getEntityId()));
+            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(new PacketPlayOutNamedEntitySpawn(craftPlayer.getHandle()));
+            restoreGameProfile(app);
+		}
+	}
 	
 	public void altPlayer(Player player) {
 		boolean alt = true;
@@ -72,64 +99,56 @@ public class AltManager {
                 }
             }
             if (name.length() > 16) {
-                player.sendMessage(ChatUtils.format("&cEl nick debe tener menos de 16 caracteres.")); //TODO LANG
-                return;
+                name = name.substring(0,16);
             }
         	GameProfile profile = new GameProfile(player.getUniqueId(), name);
             Skin skin = getSkin();
             profile.getProperties().put("textures", new Property("textures", skin.getValue(), skin.getSign()));
         	altPlayers.put(player.getUniqueId(), new AltPlayer(player, name, craftPlayer.getProfile(), profile));
-	        player.setDisplayName(name);
 	        player.setPlayerListName(name);
 	        player.sendMessage(ChatUtils.format("&aTe has transformado en: &e" + name)); //TODO LANG
         }
         else {
-	        player.setDisplayName(player.getName());
 	        player.setPlayerListName(player.getName());
+	        player.sendMessage(ChatUtils.format("¡&aHas vuelto a ser tu!")); //TODO LANG
         }
         
-        craftPlayer.getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, craftPlayer.getHandle()));
+        for (Player lp : Bukkit.getOnlinePlayers()) {
+        	if (!lp.getUniqueId().equals(player.getUniqueId())) {
+        		((CraftPlayer) lp).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, craftPlayer.getHandle()));
+        	}
+        }
         setGameProfile(player, alt);
-        craftPlayer.getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, craftPlayer.getHandle()));
+        for (Player lp : Bukkit.getOnlinePlayers()) {
+        	if (!lp.getUniqueId().equals(player.getUniqueId())) {
+        		((CraftPlayer) lp).getHandle().playerConnection.sendPacket(new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, craftPlayer.getHandle()));
+        		((CraftPlayer) lp).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityDestroy(player.getEntityId()));
+                ((CraftPlayer) lp).getHandle().playerConnection.sendPacket(new PacketPlayOutNamedEntitySpawn(craftPlayer.getHandle()));
+        	}
+        }
+        restoreGameProfile(player);
         
         if(!alt) {
         	altPlayers.remove(player.getUniqueId());
         }
-        
-        for (Player lp : Bukkit.getOnlinePlayers()) {
-            if (!lp.getUniqueId().equals(player.getUniqueId())) {
-                ((CraftPlayer) lp).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityDestroy(player.getEntityId()));
-                ((CraftPlayer) lp).getHandle().playerConnection.sendPacket(new PacketPlayOutNamedEntitySpawn(craftPlayer.getHandle()));
-            }
-        }
-        new BukkitRunnable() {
-        	@Override
-        	public void run() {
-		        for (Player lp : Bukkit.getOnlinePlayers()) {
-		            if (!lp.getUniqueId().equals(player.getUniqueId())) {
-		            	lp.hidePlayer(player);
-		            }
-		        }
-        	}
-        }.runTask(this.plugin);
-        new BukkitRunnable() {
-        	@Override
-        	public void run() {
-		        for (Player lp : Bukkit.getOnlinePlayers()) {
-		            if (!lp.getUniqueId().equals(player.getUniqueId())) {
-		            	lp.showPlayer(player);
-		            }
-		        }
-        	}
-        }.runTaskLater(this.plugin, 5);
 	}
 	
 	private String[] nickParts1 = new String[] {"_", "The", "King", "Noob", "i", "l", "Master", "Xx_", "Max", "El", "La", "Tu", "My",
-			"Super", "Un", "Mine", "Craft", "_X_", "Ultra", "Mega", "Hard", "War", "Ez", "In", "Kill"};
-	private String[] nickParts2 = new String[] {"_", "King", "Noob", "Master", "Pollo", "Bad", "Legit", "Pro", "Luis", "Jesus", 
-			"Dani", "Diego", "Jose", "Mari", "Luci", "Rekt", "Pepe", "Lol", "Fer", "Tony", "Rodri", "RTX", "Crazy", "Craft"};
+			"Super", "Un", "Mine", "Craft", "_X_", "Ultra", "Mega", "Hard", "War", "Ez", "In", "Kill", "Moon", "Bad", "x", "Let", "Kuro",
+			"Queen", "Gamer", "Mini", "Max", "", "Cube", "im", "Im", "Your", "ez", "Our", "Holy", "Baby", "Sky", "Ender", "Uni", "He",
+			"She", "Anti", "Life", "Live", "", "i", "l", "_", "San", "Miss", "my_", "The_", "", "im", "", "Mister"};
+	private String[] nickParts2 = new String[] {"_", "King", "Noob", "Master", "Pollo", "Bad", "Legit", "Pro", "Luis", "Jesus", "Dios", 
+			"Dani", "Diego", "Jose", "Mari", "Luci", "Rekt", "Pepe", "Fer", "Tony", "Rodri", "RTX", "Crazy", "Craft", "Sable", "Focus",
+			"Bad", "Good", "Sara", "Mars", "Mora", "Beep", "Sheep", "Neko", "Cat", "Rush", "Ken", "Marti", "Sofi", "Edgar", "Gamer",
+			"Cube", "Josue", "Alex", "Ani", "Free", "Duty", "Bunny", "Daddy", "Mike", "Dano", "Pony", "Troll", "Drag", "Ball", "Joker",
+			"Goku", "Princ", "Bill", "Fake", "Seba", "Sebas", "Paty", "Carla", "Carl", "Mandy", "Billy", "Jimmy", "Light", "Leo", "Leon",
+			"Alfredo", "Minion", "Killer", "Dragon", "Andres", "Gaymer", "Rubius", "Boom", "Shake", "Bored", "_IzI_", "Monster", "Emma"};
 	private String[] nickParts3 = new String[] {"_", "777", "King", "Noob", "7u7", "Master", "_xX", "PvP", "Pro", "YT", "_YT", "TV", "Love",
-			"You", "Sony", "Fruit", "Dance", "Loco", "Crazy", "Grey", "Super", "Craft", "_X_", "UwU", "OwO", "Ez", "Fork", "Kill"};
+			"You", "Sony", "Fruit", "Dance", "Loco", "Crazy", "Grey", "Super", "Craft", "_X_", "UwU", "OwO", "Ez", "Fork", "Kill", "Laser",
+			"Bad", "Good", "Layer", "Music", "Step", "Letal", "Capo", "Chido", "Yeah", "Rush", "Pixel", "OMG", "7w7", "", "Style",
+			"Cube", "SG", "007", "San", "Chan", "Sama", "MC", "MM", "Tron", "rt", "nt", "mino", "tico", "tica", "Lol", "Lord", "Bunny",
+			"19", "21", "15", "Troll", "Ruso", "Rusa", "Sad", "Happy", "h", "Leak", "ter", "Con", "Zeta", "Ball", "Gate", "Izi", "Freak",
+			"Fail", "Fake", "Cute", "", "Focus", "Black", "Jack", "Dios", "ed", "sh", "k", "GT", "KFC"};
 	
 	private String generateNick() {
 		Random ran = new Random();
@@ -156,9 +175,13 @@ public class AltManager {
 
 	public static AltManager getInstance() {
 		if(instance == null) {
-			instance = new AltManager(ReportSystem.getPlugin());
+			instance = new AltManager();
 		}
 		return instance;
+	}
+	
+	public Map<UUID, AltPlayer> getAltPlayers() {
+		return altPlayers;
 	}
 
 }
