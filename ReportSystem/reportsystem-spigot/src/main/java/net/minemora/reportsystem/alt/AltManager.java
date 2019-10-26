@@ -141,14 +141,15 @@ public class AltManager {
 			"Dani", "Diego", "Jose", "Mari", "Luci", "Rekt", "Pepe", "Fer", "Tony", "Rodri", "RTX", "Crazy", "Craft", "Sable", "Focus",
 			"Bad", "Good", "Sara", "Mars", "Mora", "Beep", "Sheep", "Neko", "Cat", "Rush", "Ken", "Marti", "Sofi", "Edgar", "Gamer",
 			"Cube", "Josue", "Alex", "Ani", "Free", "Duty", "Bunny", "Daddy", "Mike", "Dano", "Pony", "Troll", "Drag", "Ball", "Joker",
-			"Goku", "Princ", "Bill", "Fake", "Seba", "Sebas", "Paty", "Carla", "Carl", "Mandy", "Billy", "Jimmy", "Light", "Leo", "Leon",
-			"Alfredo", "Minion", "Killer", "Dragon", "Andres", "Gaymer", "Rubius", "Boom", "Shake", "Bored", "_IzI_", "Monster", "Emma"};
+			"Goku", "Prince", "Bill", "Fake", "Seba", "Sebas", "Paty", "Carla", "Carl", "Mandy", "Billy", "Jimmy", "Light", "Leo", "Leon",
+			"Alfredo", "Minion", "Killer", "Dragon", "Andres", "Gaymer", "Rubius", "Boom", "Shake", "Bored", "_IzI_", "Monster", "Emma",
+			"Manu","Manuel","Lord","Man","Trueno","Storm","Paty","David","Dark","Combo","Rafa"};
 	private String[] nickParts3 = new String[] {"_", "777", "King", "Noob", "7u7", "Master", "_xX", "PvP", "Pro", "YT", "_YT", "TV", "Love",
 			"You", "Sony", "Fruit", "Dance", "Loco", "Crazy", "Grey", "Super", "Craft", "_X_", "UwU", "OwO", "Ez", "Fork", "Kill", "Laser",
 			"Bad", "Good", "Layer", "Music", "Step", "Letal", "Capo", "Chido", "Yeah", "Rush", "Pixel", "OMG", "7w7", "", "Style",
 			"Cube", "SG", "007", "San", "Chan", "Sama", "MC", "MM", "Tron", "rt", "nt", "mino", "tico", "tica", "Lol", "Lord", "Bunny",
 			"19", "21", "15", "Troll", "Ruso", "Rusa", "Sad", "Happy", "h", "Leak", "ter", "Con", "Zeta", "Ball", "Gate", "Izi", "Freak",
-			"Fail", "Fake", "Cute", "", "Focus", "Black", "Jack", "Dios", "ed", "sh", "k", "GT", "KFC"};
+			"Fail", "Fake", "Cute", "", "Focus", "Black", "Jack", "Dios", "ed", "sh", "k", "GT", "KFC", "22", "Killer", "_PvP", "Dream","Bro"};
 	
 	private String generateNick() {
 		Random ran = new Random();

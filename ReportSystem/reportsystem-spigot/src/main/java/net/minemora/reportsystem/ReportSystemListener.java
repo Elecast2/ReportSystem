@@ -43,7 +43,7 @@ public class ReportSystemListener implements Listener {
 					}
 					AltManager.getInstance().updateAltPlayers(event.getPlayer());
 				}
-			}.runTaskLaterAsynchronously(ReportSystem.getPlugin(), 30);
+			}.runTaskLaterAsynchronously(ReportSystem.getPlugin(), 10);
 		}
 	}
 	
