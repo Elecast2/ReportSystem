@@ -37,9 +37,8 @@ public class CommandReport extends Command implements TabExecutor {
 		if (!(sender instanceof ProxiedPlayer)) {
 			return;
 		}
-		if(args.length >= 2) {
-			ProxiedPlayer player = (ProxiedPlayer) sender;
-			
+		ProxiedPlayer player = (ProxiedPlayer) sender;
+		if(args.length >= 2) {			
 			if(cooldown.containsKey(player.getName())) {
 				long time = System.currentTimeMillis() - cooldown.get(player.getName());
 				if(time < 25000) {
@@ -103,6 +102,14 @@ public class CommandReport extends Command implements TabExecutor {
 					+ "tan pronto como sea posible. &cRecuerda que el mal uso de este comando puede provocar que se niegen tus "
 					+ "permisos para usarlo o hasta podrias ser baneado. &6Para mas información usa &e/reportinfo")));
 			new Report(player.getName(), args[0], reason).send();
+		}
+		else {
+			player.sendMessage(TextComponent.fromLegacyText(Chat.format("&cComando usado incorrectamente. &aDebes usar &6&l/report &e&l<nick> <razón>")));
+			player.sendMessage(TextComponent.fromLegacyText(Chat.format("&cLa razón debe ser una de las "
+					+ "siguientes: &4 " + String.join(", ", reasons))));
+			player.sendMessage(TextComponent.fromLegacyText(Chat.format("&6&lRecuerda que los reportes falsos pueden "
+					+ "provocar que se te niege el comando /report")));
+			return;
 		}
 	}
 	
