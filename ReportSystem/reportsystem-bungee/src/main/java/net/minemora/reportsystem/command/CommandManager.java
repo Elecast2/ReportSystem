@@ -21,5 +21,6 @@ public final class CommandManager {
 		plugin.getProxy().getPluginManager().registerCommand(plugin, new CommandReportList());
 		plugin.getProxy().getPluginManager().registerCommand(plugin, new CommandRepeatGoTo());
 		plugin.getProxy().getPluginManager().registerCommand(plugin, new CommandLegit());
+		plugin.getProxy().getPluginManager().registerCommand(plugin, new CommandToggleStaffChat());
 	}
 }

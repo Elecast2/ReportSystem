@@ -25,6 +25,7 @@ import net.minemora.reportsystem.StaffMessage;
 import net.minemora.reportsystem.command.CommandGlobalSpy;
 import net.minemora.reportsystem.command.CommandStaffList;
 import net.minemora.reportsystem.command.CommandToggleReports;
+import net.minemora.reportsystem.command.CommandToggleStaffChat;
 import net.minemora.reportsystem.util.Chat;
 
 public class PubSubMessageHandler implements Listener {
@@ -136,6 +137,9 @@ public class PubSubMessageHandler implements Listener {
 					.format("&1&lSM &9[&3" + serverInfo.getName() + "&9] &f" + smessage.getSender() + " &1&l> &b" + smessage.getMessage()));
 			for(ProxiedPlayer player : ReportSystem.getPlugin().getProxy().getPlayers()) {
 				if(player.hasPermission("staff.chat")) {
+					if(CommandToggleStaffChat.getDisabledPlayers().contains(player.getUniqueId())) {
+						continue;
+					}
 					player.sendMessage(message);
 				}
 			}
@@ -154,7 +158,12 @@ public class PubSubMessageHandler implements Listener {
 					if(!staffList.containsKey(serverName)) {
 						staffList.put(serverName, new HashSet<>());
 					}
-					staffList.get(serverName).add(player.getName());
+					if(CommandToggleStaffChat.getDisabledPlayers().contains(player.getUniqueId())) {
+						staffList.get(serverName).add("&c" + player.getName() + " &7(Chat desactivado)&f");
+					}
+					else {
+						staffList.get(serverName).add(player.getName());
+					}
 				}
 			}
 			new StaffListInfo(RedisBungee.getApi().getServerId(), origin, staffList).send();
@@ -212,6 +221,14 @@ public class PubSubMessageHandler implements Listener {
 			}
 			else if(splited[1].equals("remove")) {
 				CommandToggleReports.getHideReports().remove(UUID.fromString(splited[2]));
+			}
+		}
+		else if(splited[0].equals("ToggleStaffChat")) {
+			if(splited[1].equals("add")) {
+				CommandToggleStaffChat.getDisabledPlayers().add(UUID.fromString(splited[2]));
+			}
+			else if(splited[1].equals("remove")) {
+				CommandToggleStaffChat.getDisabledPlayers().remove(UUID.fromString(splited[2]));
 			}
 		}
 		else if(splited[0].equals("Ban")) {
